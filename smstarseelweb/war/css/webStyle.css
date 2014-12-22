@@ -1,0 +1,76 @@
+html { 
+  height: 100%;
+}
+* {
+margin: 0;
+padding: 0;
+}
+header { 
+	background-image: url(../images/header3.png), url(../images/back5.png);
+	background-repeat: no-repeat, repeat-x;
+	background-position: top, bottom;
+  	height: 72px;
+  	border-bottom: thick ridge teal;
+}
+.headerLogo {
+	/* set margin-left AND margin-right = auto to align div in center */
+	margin-left: auto;
+	margin-right: auto;
+	background: url("../images/envelope4.png") no-repeat;
+	background-size: 60px 60px;
+	padding: 10;
+	padding-left: 20px;
+  	width: 200px;
+  	height: 45px;
+  	border: red solid thin;
+  	float: left;
+}
+.headerLogotext1 {
+  	font-family: monospace;
+  	font-size: xx-large;
+  	font-weight: bold;
+  	color: #00BFFF;
+  	text-shadow: 0 0 5px #200, 0 0 2px #200, 1px 3px 3px #333;
+}
+.headerLogotext2 {
+  	font-family: cursive;
+  	font-size: x-large;
+  	font-weight: bold;
+  	color: #d7df23;
+ 	text-shadow: 0 0 5px #200, 0 0 2px #200, 1px 3px 3px #333;
+}
+a {
+	cursor: pointer;
+	text-decoration: underline;
+	color: fuchsia;
+	box-shadow: #6A91B3 8px 8px 8px; 
+	/*for rounded corners*/
+	-moz-border-radius: 90px;
+	-webkit-border-radius: 90px;
+	border-radius: 90px; /* future proofing */
+	-khtml-border-radius: 90px; /* for old Konqueror browsers */
+}
+
+table {
+	width: 100%;
+}
+
+.divCenter {
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
+	border: thick groove black;
+	padding-left: 50px;
+	padding-right: 50px;
+	/*for rounded corners*/
+	-moz-border-radius: 90px;
+	-webkit-border-radius: 90px;
+	border-radius: 90px; /* future proofing */
+	-khtml-border-radius: 90px; /* for old Konqueror browsers */
+}
+
+.heading {
+	text-align: center;
+	font-weight: bold;
+	color: gray;
+}

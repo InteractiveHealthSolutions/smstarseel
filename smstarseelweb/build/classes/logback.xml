@@ -1,0 +1,112 @@
+<configuration debug="true">
+    
+    <property resource="smstarseel.properties" />
+    
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+		<smtpHost>smtp.gmail.com</smtpHost>
+		<smtpPort>587</smtpPort>
+		<STARTTLS>true</STARTTLS>
+		<username>YOUR_USERNAME@gmail.com</username>
+		<password>YOUR_GMAIL_xPASSWORD</password>
+
+		<to>EMAIL-DESTINATION</to>
+		<to>ANOTHER_EMAIL_DESTINATION</to> <!-- additional destinations are possible -->
+		<from>YOUR_USERNAME@gmail.com</from>
+		<subject>TESTING: %logger{20} - %m</subject>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%date %-5level %logger - %message%n</pattern>
+		</layout>
+	</appender>
+
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${application.log.log-files-location}/tarseel.log</file>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>tarseel.%i.log</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>5</maxIndex>
+		</rollingPolicy>
+
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>1MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>%d %-4relative %-5level %logger{35} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	<appender name="FILE_PHONE_COMM"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${application.log.log-files-location}/phonecommlog.log</file>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>phonecommlog.%i.log</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>5</maxIndex>
+		</rollingPolicy>
+
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>5MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>%d - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	<appender name="PHONE_FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${application.log.log-files-location}/tarseelphonelog.log</file>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>tarseelphonelog.%i.log</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>5</maxIndex>
+		</rollingPolicy>
+
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>1MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder>
+			<pattern>%d %-4relative [%thread] %-5level %logger{35} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	<appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+	   <connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
+	      <dataSource class="com.mchange.v2.c3p0.ComboPooledDataSource">
+	        <driverClass>${smstarseel.database.connection.driver_class}<!-- com.mysql.jdbc.Driver --></driverClass>
+	        <jdbcUrl>${smstarseel.database.connection.url}<!-- jdbc:mysql://localhost:3306/smstarseel --></jdbcUrl>
+	        <user>${smstarseel.database.connection.username}</user>
+	        <password>${smstarseel.database.connection.password}</password>
+	      </dataSource>
+	    </connectionSource>
+	  </appender>
+
+	<logger name="fileAppender" additivity="false">
+		<appender-ref ref="FILE" />
+	</logger>
+	<logger name="phoneCommfileAppender" additivity="false">
+		<appender-ref ref="FILE_PHONE_COMM" />
+	</logger>
+	<logger name="phonefileAppender" additivity="false">
+		<appender-ref ref="PHONE_FILE" />
+	</logger>
+	<logger name="dbAppender" additivity="false">
+		<appender-ref ref="DB" />
+	</logger>
+
+	<root level="info">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration> 

@@ -1,0 +1,56 @@
+a {
+	font-size: small;
+	cursor: pointer;
+	text-decoration: underline;
+	color: fuchsia;
+	box-shadow: #6A91B3 8px 8px 8px; "
+	/*for rounded corners*/
+	-moz-border-radius: 90px;
+	-webkit-border-radius: 90px;
+	border-radius: 90px; /* future proofing */
+	-khtml-border-radius: 90px; /* for old Konqueror browsers */
+}
+
+table {
+	width: 100%;
+	font-size: x-small;
+}
+
+.divCenter {
+
+	width: 90%;
+	border: thick groove black;
+	padding-left: 10px;
+	padding-right: 10px;
+	/*for rounded corners*/
+	-moz-border-radius: 90px;
+	-webkit-border-radius: 90px;
+	border-radius: 90px; /* future proofing */
+	-khtml-border-radius: 90px; /* for old Konqueror browsers */
+}
+
+.heading {
+	text-align: center;
+	font-weight: bold;
+	color: gray;
+}
+
+h1 {
+	font-size: medium;
+	background-color: teal;
+	/*for rounded corners*/
+	-moz-border-radius: 90px;
+	-webkit-border-radius: 90px;
+	border-radius: 90px; /* future proofing */
+	-khtml-border-radius: 90px; /* for old Konqueror browsers */
+}
+
+.closeButton {
+	cursor: pointer;
+	font-size: medium;
+	font-weight: bolder;
+	font-stretch: wider;
+	color: white;
+	background-color: red;
+	float: right;
+}

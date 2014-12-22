@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+		"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+		"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="hibernate.connection.password">VA1913wm</property>
+		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/smstarseel</property>
+		<property name="hibernate.connection.username">root</property>
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+		
+		<!-- <property name="hibernate.connection.password">codbr</property>
+		<property name="hibernate.connection.url">jdbc:mysql://125.209.94.150:2103/smstarseel</property> -->
+		
+		<!-- <property name="hibernate.hbm2ddl.auto">update</property> -->
+
+		<!-- MUST be included if you want to use unicode or utf-8 column type, 
+			otherwise hibernate is unable to recognize utf-8 input -->
+		<property name="hibernate.connection.useUnicode">true</property>
+		<property name="hibernate.connection.characterEncoding">UTF-8</property>
+		<property name="hibernate.connection.charSet">UTF-8</property>
+
+		<!-- Use the C3P0 connection pool provider -->
+		<property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
+		<property name="hibernate.c3p0.min_size">5</property>
+		<property name="hibernate.c3p0.max_size">20</property>
+		<property name="hibernate.c3p0.timeout">120</property>
+		<property name="hibernate.c3p0.acquireRetryAttempts">3</property>
+		<property name="hibernate.c3p0.max_statements">50</property>
+	</session-factory>
+</hibernate-configuration>

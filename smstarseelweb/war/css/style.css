@@ -1,0 +1,295 @@
+body { 
+font-family: Verdana, sans-serif; 
+line-height: 1.4;
+font-size: 12px;
+background: #f9f5e3 url(../images/bg.jpg) repeat-x;
+margin: 0;
+padding: 0;
+}
+
+a { color: #646F00; text-decoration: none;}
+a:hover { text-decoration: underline; }
+h1 { margin: 0; padding: 0; }
+h2 { margin: 0; padding: 0; }
+
+#wraptemp { 
+width: 1000px;
+margin: auto auto;
+border: solid silver 1px;
+margin-top: 10px;
+}
+
+#headertemp {
+background: url(../images/header2.png) repeat-x;
+height: 80px;
+font-family: Georgia, sans-serif;
+}
+.headerLogo {
+	/* set margin-left AND margin-right = auto to align div in center */
+	background: url("../images/envelope5.png") no-repeat;
+	background-size: 80px 80px;
+	padding: 15px;
+  	width: 300px;
+  	height: 50px;
+  	float: left;
+ }
+.headerLogotext1 {
+  	font-family: monospace;
+  	font-size: xx-large;
+  	font-weight: bold;
+  	color: #00BFFF;
+  	text-shadow: 0 0 5px #200, 0 0 2px #200, 1px 3px 3px #333;
+}
+.headerLogotext2 {
+  	font-family: cursive;
+  	font-size: x-large;
+  	font-weight: bold;
+  	color: #d7df23;
+ 	text-shadow: 0 0 5px #200, 0 0 2px #200, 1px 3px 3px #333;
+}
+
+#menutemp {
+background: url(../images/menu2.png) repeat-x;
+height: 40px;
+line-height: 40px;
+border-bottom:3px solid  #A9D0F5;
+}
+#menutemp ul {
+list-style-type: none;
+margin: 0;
+padding-left: 20px;
+}
+#menutemp ul li {
+display: block;
+float: left;
+}
+#menutemp ul li a {
+display: block;
+padding: 0 10px 0 10px;
+text-decoration: none;
+color: #fff;
+font-size: 14px;
+font-weight: 100;
+}
+#menutemp ul li a:hover {
+color: #fff;
+background: url(../images/menuover.png) repeat-x;
+}
+#menutemp ul li.highlight {
+color: #fff;
+background: url(../images/menuover.png) repeat-x;
+	/*for rounded corners*/
+	-moz-border-radius: 99px 99px 0px 0px;
+	-webkit-border-radius: 99px 99px 0px 0px;
+	border-radius: 99px 99px 0px 0px; /* future proofing */
+	-khtml-border-radius: 99px 99px 0px 0px; /* for old Konqueror browsers */
+	
+	/* border-top:5px solid #FFFF00; */
+	border-left:5px solid  #A9D0F5;
+	border-right:5px solid  #A9D0F5;
+}
+#contentwrap {
+/* background: url(../images/contentbg2.png) repeat-y; */
+/* padding: 0 30px; */
+}
+
+#contenttemp {
+background: url(../images/bottomcontent.png) repeat-y;
+float: left;
+width: 770px;
+padding: 5px;
+height: 575px;
+}
+#contenttemp h2 {
+margin: 0;
+color: #555;
+line-height: 30px;
+font-size: 17px;
+font-weight: 100;
+}
+#contenttemp p { padding: 0 0 10px 0; color: #444;}
+#contenttemp ul { padding: 0 20px 10px 30px; }
+
+.sidebarlistwrapper{
+	height: 225px;
+}
+
+#sidebar {
+background: url(../images/siderbarbkg.png) repeat-y;
+float: right;
+width: 220px;
+height: 575px;
+}
+#sidebar h3 {
+height: 30px;
+line-height: 30px;
+font-size: 15px;
+font-weight: 100;
+margin: 0; padding: 0 0 0 0; 
+color: #fff;
+padding-left: 10px;
+background-color: silver;
+}
+#sidebar p { padding: 0 10px 10px 10px; color: #fff; }
+#sidebar ul {
+padding: 10px 0 25px 30px;
+margin: 0;
+color: #fff;
+list-style-type: circle;
+}
+#sidebar ul li {
+padding: 0;
+margin: 0;
+}
+#sidebar ul li a { color: #fff; font-size: 11px;}
+#sidebar ul ul { padding: 2px 0 2px 20px; }
+
+#footer { 
+	background: #A9D0F5;
+text-align: center;
+color: #111;
+font-size: 12px;
+}
+#footer p { padding: 0; margin: 0; }
+#footer a { color: #111; }
+#footer a:hover { text-decoration: underline; }
+
+/* ------------------------------------------- TEMPLATE END ------------------------------------------------ */
+
+.divCenter {
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 50px;
+	margin-bottom: 50px;
+	width: 30%;
+	border: thick groove black;
+	padding-left: 50px;
+	padding-right: 50px;
+	
+	background: #F0F0F0 ;
+	text-align: center;
+	
+	/*for rounded corners*/
+	-moz-border-radius: 90px;
+	-webkit-border-radius: 90px;
+	border-radius: 90px; /* future proofing */
+	-khtml-border-radius: 90px; /* for old Konqueror browsers */
+}
+
+.homesummary {
+	margin: 0px;
+	border: 1px solid white;
+	display: inline-block;
+}
+.homesummary th{
+	padding: 5px;
+	background: silver;
+}
+.homesummary td{
+	padding: 5px;
+	text-align: center;
+}
+
+.homesummarynarrow{
+	width: 250px;
+	height:540px;
+	border: 2px solid gray;
+	
+	display: inline-block;
+	float: right;
+	overflow: auto;
+	/* transform: perspective(800px) rotateX(23deg); */
+}
+.homesummarynarrowtable{
+	margin-bottom: 20px;
+	margin-top: 20px;
+	font: xx-small;
+}
+.homesummarynarrowtable th{
+}
+.homesummarynarrowtable thead th{
+	border: 1px solid black;
+}
+.loggedInUser{
+	float: right;
+	text-align: right;
+	padding: 3px;
+}
+.loggedInUser a {
+	font: small italic ;
+	cursor: pointer;
+	padding-left: 10px;
+
+}
+
+::-webkit-input-placeholder { /* WebKit browsers */
+    color:    #999;
+    font-size: small;
+    font-style: italic;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color:    #999;
+    font-size: small;
+    font-style: italic;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color:    #999;
+    font-size: small;
+    font-style: italic;
+}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+    color:    #999;
+    font-size: small;
+    font-style: italic;
+}
+
+.hide_element{
+	display: none;
+}
+.show_element{
+	display: block;
+}
+.right {
+	float: right;
+}
+/* SCROLLBAR CSS*/
+
+/* ::-webkit-scrollbar { width: 10px;}
+Track
+::-webkit-scrollbar-track { 
+	-webkit-box-shadow: inset 0 0 6px #BDBDBD; 
+	-webkit-border-radius: 10px; 
+	border-radius: 10px; 
+	} 
+Handle 
+::-webkit-scrollbar-thumb { 
+	-webkit-border-radius: 10px; 
+	border-radius: 10px; 
+	background: #E6E6E6; 
+	-webkit-box-shadow: inset 0 0 6px #BDBDBD; 
+	} 
+::-webkit-scrollbar-thumb:window-inactive { 
+	background: #E6E6E6; }
+	
+::-moz-document-scrollbar {
+   -moz-appearance: none !important;
+   background: rgb(0,255,0) !important;
+}
+::-moz-document thumb,scrollbarbutton {
+   -moz-appearance: none !important;
+   background-color: rgb(0,0,255) !important;
+}
+
+::-moz-document thumb:hover,scrollbarbutton:hover {
+   -moz-appearance: none !important;
+   background-color: rgb(255,0,0) !important;
+}
+
+::-moz-document scrollbarbutton {
+   display: none !important;
+}
+
+::-moz-document scrollbar[orient="vertical"] {
+  min-width: 15px !important;
+} */
+	
