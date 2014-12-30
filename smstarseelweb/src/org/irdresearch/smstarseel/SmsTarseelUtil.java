@@ -6,12 +6,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.irdresearch.smstarseel.context.TarseelContext;
 import org.irdresearch.smstarseel.context.TarseelServices;
 import org.irdresearch.smstarseel.data.Device;
 import org.irdresearch.smstarseel.data.Device.DeviceStatus;
@@ -74,6 +73,15 @@ public class SmsTarseelUtil {
 			}
 		}
 		return prjRegDev;
+	}
+	
+	public static String getReguestParameter(Enum enumVal, HttpServletRequest req){
+		String val = req.getParameter(enumVal.name());
+		if(StringUtils.isEmptyOrWhitespaceOnly(val)){
+			return null;
+		}
+		
+		return val;
 	}
 	
 	public static String getSingleParamFromRequestMap(Enum enumVal, Map qMap, boolean returnWhitespaceVals){

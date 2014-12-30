@@ -166,24 +166,29 @@ $(function(){
 		/*frozenColumns:[[
                {title:'Reference Number',field:'referenceNumber',width:130,sortable:true}
 		]],*/
-		columns:[[  
+		columns:[[
+			{title:'--',field:'abc', width:100, 
+				formatter: function(value,row,index){
+					if (row.name != 'admin' && row.name != 'administrator')
+					{return "<a title='"+row.name+"' onclick='resetPwd(this.title);'>reset password</a>";} 
+					else {return '';}
+				}
+			},
 		    {field:'userId',title:'', hidden:true}, 
 		    {field:'name',title:'Login ID',width:80}, 
 		    {field:'firstName',title:'First Name',width:100},
 		    {field:'lastName',title:'Last Name',width:100},  
-		    {field:'email',title:'Email',width:150}, 
 		    {field:'status',title:'Status',width:100}, 
+		    {field:'roles',title:'Role',width:100, 
+		    	formatter: function(value,row,index){
+					return row.roles[0].name;
+				}
+		    },
+		    {field:'email',title:'Email',width:150}, 
 		    {field:'createdDate',title:'Created Date',width:135, 
 		    	formatter: function(value,row,index){
 					if (value != null && value != ''){return new Date(value).toString('dd-MMM-yyyy HH:mm:ss');} 
 					else {return value;}
-				}
-		    },
-		    {title:'--',field:'abc', width:100, 
-		    	formatter: function(value,row,index){
-					if (row.name != 'admin' && row.name != 'administrator')
-					{return "<a title='"+row.name+"' onclick='resetPwd(this.title);'>reset password</a>";} 
-					else {return '';}
 				}
 		    }
 		]]  , 

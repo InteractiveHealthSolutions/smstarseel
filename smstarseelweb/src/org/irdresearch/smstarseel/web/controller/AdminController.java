@@ -2,14 +2,17 @@ package org.irdresearch.smstarseel.web.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import javax.management.InstanceAlreadyExistsException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.irdresearch.smstarseel.EmailEngine;
 import org.irdresearch.smstarseel.SmsTarseelUtil;
 import org.irdresearch.smstarseel.context.TarseelContext;
 import org.irdresearch.smstarseel.context.TarseelServices;
@@ -22,9 +25,11 @@ import org.irdresearch.smstarseel.data.Setting;
 import org.irdresearch.smstarseel.data.User;
 import org.irdresearch.smstarseel.data.User.UserStatus;
 import org.irdresearch.smstarseel.service.UserServiceException;
+import org.irdresearch.smstarseel.web.util.ExceptionHandlerUtil;
 import org.irdresearch.smstarseel.web.util.ResponseUtil;
 import org.irdresearch.smstarseel.web.util.UserSessionUtils;
 import org.irdresearch.smstarseel.web.util.WebGlobals.CommunicationQueryParams;
+import org.irdresearch.smstarseel.web.util.WebGlobals.ProjectQueryParams;
 import org.irdresearch.smstarseel.web.util.WebGlobals.QueryParams;
 import org.irdresearch.smstarseel.web.util.WebGlobals.SettingQueryParams;
 import org.irdresearch.smstarseel.web.util.WebGlobals.UserQueryParams;
@@ -214,6 +219,102 @@ public class AdminController extends DataDisplayController{
 		return map;
 	}
 	
+	@RequestMapping(value="/edit_project.dm")
+	public @ResponseBody Map<String, Object> editProject(HttpServletRequest request){
+		Map<String,Object> map = new HashMap<String,Object>();
+		Map queryParams = request.getParameterMap();
+		TarseelServices tsc = TarseelContext.getServices();
+		try {
+			User userlgd = UserSessionUtils.getActiveUser(request).getUser();
+			if(userlgd == null){
+				map.put("message", "Session expired. Login again.");
+				return map;
+			}
+			else if(!userlgd.hasAdministrativePrivileges()){
+				map.put("message", "User not allowed for operations.");
+				return map;
+			}
+			
+			String projectName = SmsTarseelUtil.getSingleParamFromRequestMap(ProjectQueryParams.PROJECT_NAME, queryParams, false);
+			String projectId = SmsTarseelUtil.getSingleParamFromRequestMap(ProjectQueryParams.PROJECT_ID, queryParams, false);
+			
+			Project prj = tsc.getDeviceService().findProjectById(Integer.parseInt(projectId));
+			if(prj == null){
+				map.put("message", "Project not found.");
+				return map;
+			}
+			else if(StringUtils.isEmptyOrWhitespaceOnly(projectName)){
+				map.put("message", "Project name can not be empty or whitespace only");
+				return map;
+			}
+			else if(!projectName.trim().matches("[a-zA-Z0-9\\s]{3,20}")){
+				map.put("message", "Project name should be alphanumeric string with 3-20 characters only");
+				return map;
+			}
+			String oldName = prj.getName();
+
+			prj.setName(projectName.trim());
+			
+			tsc.getDeviceService().updateProject(prj);
+			tsc.commitTransaction();
+			
+			map.put("message", "Project name updated successfully. Refresh page to update view");
+			map.put("SUCCESS", true);
+
+			EmailEngine.getInstance().emailErrorReportToAdminAsASeparateThread(oldName+": Project name edited", 
+						"Project: "+oldName+"\nID: "+prj.getProjectId()+"\n Edited by user "+userlgd.getFullName()
+						+"\nNew project name is "+projectName.trim());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			map.put("message", "Error:"+e.getMessage());
+		}
+		finally{
+			tsc.closeSession();
+		}
+		
+		return map;
+	}
+	
+	@RequestMapping(value="/discard_device.dm")
+	public String discardDevice(HttpServletRequest request){
+		TarseelServices tsc = TarseelContext.getServices();
+		try {
+			User userlgd = UserSessionUtils.getActiveUser(request).getUser();
+			if(userlgd == null){
+				return "redirect:/login.htm";
+			}
+			else if(!userlgd.hasAdministrativePrivileges()){
+				return ExceptionHandlerUtil.showException(request, new Exception("User not permitted for requested operation"));
+			}
+			
+			Device dev = tsc.getDeviceService().findDeviceById(Integer.parseInt(request.getParameter("DEVICE_ID")));
+			dev.setStatus(DeviceStatus.DISCARDED);
+			dev.setEditedByUserId(userlgd.getName());
+			dev.setEditedByUsername(userlgd.getFullName());
+			dev.setDateEdited(new Date());
+			
+			tsc.getDeviceService().updateDevice(dev);
+			tsc.commitTransaction();
+
+			EmailEngine.getInstance().emailErrorReportToAdminAsASeparateThread(dev.getProject().getName()+": Device discarded", 
+					dev.getProject().getName()+": Device discarded on project. Details are:\n"
+							+ "\nImei: "+dev.getImei()
+							+ "\n Sim: "+dev.getSim()
+							+ "\n Date Added: "+dev.getDateAdded()
+							+ "\n Last Inbound Ping: "+dev.getDateLastInboundPing()
+							+ "\n Last Outbound Ping: "+dev.getDateLastOutboundPing()
+							+ "\n Last Call Log Ping: "+dev.getDateLastCalllogPing());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally{
+			tsc.closeSession();
+		}
+		
+		return "redirect:/admin/admin.htm";
+	}
 	@RequestMapping(value="/add_user.dm")
 	public @ResponseBody Map<String, Object> addUser(HttpServletRequest request){
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -369,6 +470,15 @@ public class AdminController extends DataDisplayController{
 		return map;
 	}
 	
+	public static void main(String[] args) throws InstanceAlreadyExistsException, InstantiationException, IllegalAccessException, DataException {
+		TarseelContext.instantiate(null, "smstarseel.cfg.xml");
+		TarseelServices tsc = TarseelContext.getServices();
+		List<User> items = tsc.getUserService().findUserByCriteria(null, null, null, false, 0, 100);
+		tsc.closeSession();
+		ArrayList<User> op = ResponseUtil.prepareDataResponse((ArrayList<User>) items, new String[]{"roles.permissions"});
+		System.out.println(op);
+	}
+	
 	@RequestMapping(value="/traverse_users.do")
 	public @ResponseBody Map<String, Object> traverseUsers(HttpServletRequest request){
 		Map queryParams = request.getParameterMap();
@@ -387,8 +497,18 @@ public class AdminController extends DataDisplayController{
 			Integer pageNumber = Integer.parseInt(SmsTarseelUtil.getSingleParamFromRequestMap(QueryParams.PAGE_NUMBER, queryParams, false));
 
 			items = tsc.getUserService().findUserByCriteria(email, namePart, usst, false, (pageNumber-1)*pageSize, pageSize);
-			
-			map.put("rows", ResponseUtil.prepareDataResponse((ArrayList<User>) items, new String[]{"roles"}));
+						
+			ArrayList<User> cpu = ResponseUtil.prepareDataResponse((ArrayList<User>) items, null);
+			tsc.closeSession(); // so that users are detached and not auto committed incase of autoflush
+			// donot move this line if needed removed code below too i.e. setting permission and user to null
+
+			for (User user : cpu) {
+				for (Role role : user.getRoles()) {
+					role.setPermissions(null);
+					role.setUsers(null);
+				}
+			}
+			map.put("rows", cpu);
 		    //map.put("total", tsc.getUserService().LAST_QUERY_TOTAL_ROW__COUNT(User.class).intValue());
 		}
 		catch (DataException e) {

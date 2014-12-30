@@ -1,6 +1,5 @@
 import ird.xoutTB.emailer.exception.EmailException;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,12 +8,9 @@ import java.util.Properties;
 import org.irdresearch.smstarseel.EmailEngine;
 import org.irdresearch.smstarseel.context.TarseelContext;
 import org.irdresearch.smstarseel.context.TarseelServices;
-import org.irdresearch.smstarseel.data.Project;
 import org.irdresearch.smstarseel.data.User;
 import org.irdresearch.smstarseel.data.User.UserStatus;
-import org.irdresearch.smstarseel.queries.DataQuery;
 import org.irdresearch.smstarseel.service.UserServiceException;
-import org.irdresearch.smstarseel.web.util.WebGlobals;
 
 public class dataAdder {
 

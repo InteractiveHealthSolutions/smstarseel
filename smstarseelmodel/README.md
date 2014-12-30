@@ -32,8 +32,12 @@ Apart from smstarseel jar you need to include following libraries into your proj
 - slf4j-api-1.6.4.jar
 - slf4j-log4j12-1.6.1.jar
 
-##### Note: 
-if you donot want to use c3p0 connection pool, comment the C3P0 connection properties in cfg.xml and remove jar files c3p0-0.9.1.jar and hibernate-c3p0-3.6.0.Final.jar from classpath/lib
+#### Note: 
+If you donot want to use c3p0 connection pool, comment the C3P0 connection properties in cfg.xml and remove jar files c3p0-0.9.1.jar and hibernate-c3p0-3.6.0.Final.jar from classpath/lib. Although it is strongly recommended to use aa connection pool for database.
+
+Hibernate [documentation](http://docs.jboss.org/hibernate/orm/4.2/devguide/en-US/html/ch01.html#d5e150) strongly suggests using a connection pool for better performance and recommends c3p0. 
+
+For details on available properties read c3p0 [documentation](http://www.mchange.com/projects/c3p0/#configuration_properties).
 
 # Add smstarseel.cfg.xml into classpath. 
 Add a hibernate cfg.xml file that smstarseel would use to configure hibernate. The minimum content of file is given below.
@@ -84,5 +88,3 @@ tsc.getSmsService().....
 
 For API developer:
 -----------------
-
-

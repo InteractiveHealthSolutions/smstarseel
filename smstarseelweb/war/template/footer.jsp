@@ -15,7 +15,7 @@
 <jsp:include page="/template/sidebar_${navigationType}.jsp" />
 </div>
 <h3>Quick Summary</h3>
-<div id="pgQuickSummaryDiv" style="width:225px;height:310px;" >
+<div id="pgQuickSummaryDiv" style="width:225px;height:280px;" >
 	<table id="pgQuickSummary" class="easyui-propertygrid" style="width:220px;height:800px;background: transparent;overflow: visible;"></table>  
 </div>
 	<script type="text/javascript">

@@ -55,7 +55,7 @@ public class SecurityUtils {
     public static void main(String[] args) {
 		try {
 			System.out.println(encrypt("administrator", "admin"));
-			System.out.println(decrypt("tkGlnpGEtf8933d2KoMFbefxG8ATMOOigkP+0uHS5HG7tQwpFSn1zyL73vwtmtv5E0/GkIMRS3xpk6Qsu7fqmQ==", "admin"));
+			System.out.println(decrypt("U+rF8sDI2DhrAOGyvjgY4dK9GWIdDY3NCAXd/3tseOc=", "admin"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

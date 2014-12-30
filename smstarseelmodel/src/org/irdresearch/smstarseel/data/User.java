@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -19,9 +20,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "user")
@@ -58,9 +56,8 @@ public class User implements Serializable{
 	@Column(name = "phoneNo")
 	private String		phoneNo;
 
-	@ManyToMany(targetEntity = Role.class, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@ManyToMany(fetch=FetchType.EAGER, targetEntity = Role.class, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "roleId"))
-	@Fetch(FetchMode.JOIN)
 	private Set<Role>	roles	= new HashSet<Role>();
 
 	@Column(name = "email")

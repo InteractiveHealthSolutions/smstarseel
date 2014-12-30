@@ -38,7 +38,9 @@ public class HibernateUtil {
 			if(!StringUtils.isEmptyOrWhitespaceOnly(configFileName)){
 				conf.configure(configFileName);
 			}
-			else {
+
+			// if properties == null and no filename is specified look for default hibernate.cfg.xml and do default
+			if(properties == null && StringUtils.isEmptyOrWhitespaceOnly(configFileName)){
 				conf.configure();
 			}
 			

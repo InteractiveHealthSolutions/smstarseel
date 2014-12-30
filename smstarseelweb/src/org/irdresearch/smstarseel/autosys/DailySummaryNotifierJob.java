@@ -92,7 +92,7 @@ public class DailySummaryNotifierJob implements Runnable {
 	    			zo.write(b);
 	    			
 	    			String[] recpl = TarseelContext.getSetting(TarseelSetting.DAILY_SUMMARY_NOTIFIER_RECIPIENTS.NAME(), null).replaceAll(" ", "").split(",");
-	    			EmailEngine.getEmailer().postEmailWithAttachment(recpl, subject, message, "smstarseel@ird.org", zo.toByteArray(), project.getName().toUpperCase()+"-DailySummary"+DateUtils.convertToString(new Date())+".csv",AttachmentType.CSV);
+	    			EmailEngine.getEmailer().postEmailWithAttachment(recpl, subject, message, "smstarseel@ird.org", zo.toByteArray(), project.getName().toUpperCase()+"-DailySummary"+new SimpleDateFormat("yyyy-MM-ddHHmm").format(new Date())+".csv",AttachmentType.CSV);
 	    			
 	    			zo.close();
     			}

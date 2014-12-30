@@ -8,7 +8,6 @@ import java.util.Properties;
 
 import javax.mail.MessagingException;
 
-import org.irdresearch.smstarseel.context.TarseelContext;
 import org.irdresearch.smstarseel.service.utils.DataValidation;
 import org.irdresearch.smstarseel.service.utils.ExceptionUtil;
 import org.irdresearch.smstarseel.service.utils.LoggerUtil;

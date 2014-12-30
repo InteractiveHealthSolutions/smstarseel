@@ -33,7 +33,6 @@ import org.irdresearch.smstarseel.handler.InitDataHandler;
 import org.irdresearch.smstarseel.handler.LoginHandler;
 import org.irdresearch.smstarseel.handler.ReceiveFileHandler;
 import org.irdresearch.smstarseel.handler.SmsHandler;
-import org.irdresearch.smstarseel.web.util.WebGlobals;
 import org.irdresearch.smstarseel.web.util.WebGlobals.TarseelSetting;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -97,7 +96,7 @@ return true;*/
 			Properties prop = new Properties();
 			prop.putAll(SmsTarseelUtil.convertEntrySetToMap(root.entrySet()));
 
-			TarseelContext.instantiate(prop, "smstarseel.cfg.xml");
+			TarseelContext.instantiate(prop, null);
 
 			System.out.println("......PROPERTIES LOADED SUCCESSFULLY......");
 				

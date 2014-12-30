@@ -7,20 +7,15 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Session;
-import org.irdresearch.smstarseel.SmsTarseelUtil;
 import org.irdresearch.smstarseel.context.TarseelContext;
 import org.irdresearch.smstarseel.context.TarseelServices;
 import org.irdresearch.smstarseel.data.Project;
 import org.irdresearch.smstarseel.queries.DataQuery;
-import org.irdresearch.smstarseel.service.UserServiceException;
 import org.irdresearch.smstarseel.service.utils.DateUtils;
 import org.irdresearch.smstarseel.service.utils.DateUtils.TIME_INTERVAL;
-import org.irdresearch.smstarseel.web.util.UserSessionUtils;
 import org.irdresearch.smstarseel.web.util.WebGlobals;
-import org.irdresearch.smstarseel.web.util.WebGlobals.UserQueryParams;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;

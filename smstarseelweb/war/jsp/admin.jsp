@@ -1,3 +1,4 @@
+<%@page import="org.irdresearch.smstarseel.web.util.WebGlobals.ProjectQueryParams"%>
 <%@page import="org.irdresearch.smstarseel.web.util.WebGlobals.CommunicationQueryParams"%>
 <%@page import="org.irdresearch.smstarseel.web.util.WebGlobals.DeviceQueryParams"%>
 <%@page import="org.irdresearch.smstarseel.web.util.WebGlobals.QueryParams"%>
@@ -11,14 +12,44 @@
   font-size: 20px;
 }
 --></style>
-    
-    <div id="tbAdmin" class="easyui-accordion">
+   
+<script type="text/javascript">
+function editProject(projectId, projectName) {
+	var newname = prompt("Enter a short and precise name for the project. \n\nNote: The project name would just change the display name and in backend would be associated with existing project ID. \n\nIf you want new project setup, add project from add button in the tab. \n\nEditing project name would keep existing devices, sms, and calls still associated with same project.", projectName);
+	if(newname != null){
+		try {
+			var queryParams = new Object();
+			queryParams['<%=ProjectQueryParams.PROJECT_NAME%>'] = newname; 
+			queryParams['<%=ProjectQueryParams.PROJECT_ID%>'] = projectId; 
+			
+			$.getJSON('/smstarseelweb/admin/edit_project.dm', queryParams,
+				function(response) {
+					alert(response['message']);
+					if(response['SUCCESS']){
+						document.getElementById("prjspan"+projectId).innerHTML = ' --> '+newname;
+					}
+				})
+			//feel free to use chained handlers, or even make custom events out of them!
+			/* .success(function() { alert("second success"); }) */
+			.error(function() {
+				alert("Error while loading data....");
+			})
+			/* .complete(function() { alert("complete"); }) */;
+		} catch (e) {
+				alert('exception:' + e);
+		}
+	}
+}
+</script>
+    <div id="tbAdmin" class="easyui-tabs">
         <div title="Projects" data-options="">  
        		<div>
+       		<p style="color: red;">${message}</p>
        		<table>
-       			<tr><th>Project ID</th><th>Name</th></tr>
+       			<tr><th></th><th>Project ID</th><th>Name</th></tr>
 	            <c:forEach items="${projects}" var="prj">
-	            <tr><td>${prj.projectId}</td><td>${prj.name}</td></tr>
+	            <tr><td><a onclick="editProject(${prj.projectId},'${prj.name}');">edit</a></td>
+	            <td>${prj.projectId}</td><td>${prj.name}<span id="prjspan${prj.projectId}" style="font-weight:bold ;color: green"></span></td></tr>
 	            </c:forEach>
        		</table>
             </div>
@@ -62,6 +93,11 @@ $('input[id^="txt"]').on( 'blur', function() {
     $(this).tooltip( 'hide' );
 });
 
+function discardDevice(deviceId, imei, sim) {
+	if(confirm("Are you sure to discard device with imei "+imei+" and sim "+sim+" ? Note that the action is irreversable and any active services working on device would be crashed. Make sure to stop all services on device before discarding.")){
+		window.location = '/smstarseelweb/admin/discard_device.dm?DEVICE_ID='+deviceId;
+	}
+}
 var datagridName = 'test';
 
 $(function(){
@@ -78,17 +114,25 @@ $(function(){
 		singleSelect: true,
 		idField:'imei',
 		frozenColumns:[[
-               {title:'Imei',field:'imei',width:130,sortable:true}
+               {title:'Imei',field:'imei',width:100,sortable:true}
 		]],
 		columns:[[  
-		    {field:'sim',title:'SIM',width:120}, 
-		    {field:'project',title:'Project',width:100, 
+		    {field:'discard',title:'X',width:50, 
+		    	formatter: function(value,row,index){
+					if (row['status'].toLowerCase() == 'active'){
+						return '<a onclick=\'discardDevice('+row['deviceId']+',"'+row['imei']+'","'+row['sim']+'")\'>discard</a>';
+					} 
+					else {return '';}
+				}
+		    }, 
+		    {field:'sim',title:'SIM',width:90}, 
+		    {field:'project',title:'Project',width:90, 
 		    	formatter: function(value,row,index){
 					if (value != null && value != ''){return row['project'].name;} 
 					else {return value;}
 				}},
-		    {field:'status',title:'Status',width:100}, 
-		    {field:'dateAdded',title:'Add Date',width:145, 
+		    {field:'status',title:'Status',width:70}, 
+		    {field:'dateAdded',title:'Add Date',width:120, 
 		    	formatter: function(value,row,index){
 					if (value != null && value != ''){return new Date(value).toString('dd-MMM-yyyy HH:mm:ss');} 
 					else {return value;}

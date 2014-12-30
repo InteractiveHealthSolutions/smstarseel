@@ -18,8 +18,7 @@ public class WebGlobals {
 		CELL_NUMBER_VALIDATOR_REGEX("cell-number.validator-regex", null),
 		DAILY_SUMMARY_NOTIFIER_RECIPIENTS("notifier.daily-summary.recipients", null),
 		DAILY_SUMMARY_NOTIFIER_TIME("notifier.daily-summary.email-time", "15:00:00"),
-		DAILY_SUMMARY_NOTIFIER_LAST_RUN("notifier.daily-summary.last-run", null),
-		SERVICE_CRASH_ALERT_RECIPIENTS("service-crash-alert.email-address", null);
+		DAILY_SUMMARY_NOTIFIER_LAST_RUN("notifier.daily-summary.last-run", null);
 
 		private String NAME;
 		private Object DEFAULT;
@@ -105,6 +104,10 @@ public class WebGlobals {
 		CALLDATE_TO,
 	}
 	
+	public enum ProjectQueryParams {
+		PROJECT_ID,
+		PROJECT_NAME,
+	}
 	
 	public enum ServiceType{
 		CHANGE_OWN_PWD,

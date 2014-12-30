@@ -1,5 +1,3 @@
-import org.irdresearch.smstarseel.context.TarseelContext;
-import org.irdresearch.smstarseel.context.TarseelServices;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

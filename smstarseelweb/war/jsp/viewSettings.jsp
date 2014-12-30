@@ -21,6 +21,7 @@
 	<tr><td>New Value: </td><td><textarea id="newValue" name="newValue" rows="3" style="width: 200px; resize: none" maxlength="255"/></textarea></td></tr>
 </table>
 </div>
+<span id="settingDesc"></span>
 </div>  
 
 <script>
@@ -33,11 +34,11 @@ $('#dlgEditSet').dialog({
     cache: false,  
     modal: true 
 });
-function editSetting(settingName, settingRegex, oldValue) {
+function editSetting(settingName, settingRegex, oldValue, settingDisplayName, settingDescription) {
 	$('#dlgEditSet').dialog({  
 	    title: 'Edit Setting (only for admin)',  
 	    width: 400,  
-	    height: 320,  
+	    height: 370,  
 	    closed: false,  
 	    cache: false,  
 	    modal: true ,
@@ -45,6 +46,7 @@ function editSetting(settingName, settingRegex, oldValue) {
 	    	document.getElementById('settingBeingEdited').value = settingName;
 	    	document.getElementById('settingRegex').value = settingRegex;
 	    	document.getElementById('oldValue').value = oldValue;
+	    	document.getElementById('settingDesc').innerHTML = 'Setting : '+settingDisplayName+'<br><br>'+settingDescription;
 		},
 		onClose: function() {
 			showMsg('');
@@ -80,6 +82,7 @@ function editSetting(settingName, settingRegex, oldValue) {
 								document.getElementById("settingRegex").value = '';
 								document.getElementById("oldValue").value='';
 								document.getElementById("newValue").value='';
+								document.getElementById('settingDesc').innerHTML = '';
 								showMsg(response['message']);
 							})
 						//feel free to use chained handlers, or even make custom events out of them!
@@ -119,15 +122,15 @@ $(function(){
 		    {title:'--',field:'abc', width:40, 
 		    	formatter: function(value,row,index){
 		    		if(row.isEditable){
-			    		return '<a id="anc_'+row.name+'" onclick="editSetting(\''+row.name+'\', \''+row.validatorRegex+'\', \''+row.value+'\')">edit</a>';
+			    		return '<a id="anc_'+row.name+'" onclick="editSetting(\''+row.name+'\', \''+row.validatorRegex+'\', \''+row.value+'\', \''+row.displayName+'\', \''+row.description+'\')">edit</a>';
 		    		}
 		    		
 		    		return "";
 				}
 		    },
-		    {field:'name',title:'ID',width:200}, 
-		    {field:'displayName',title:'Name',width:200},
-		    {field:'value',title:'Value',width:220, 
+		    {field:'name',title:'ID',width:180}, 
+		    {field:'displayName',title:'Name',width:150},
+		    {field:'value',title:'Value',width:180, 
 		    	formatter: function(value,row,index){
 					return '<textarea readonly="readonly" style="width: 200px;resize: none; border:0" rows="3">'+value+'</textarea>';
 				}

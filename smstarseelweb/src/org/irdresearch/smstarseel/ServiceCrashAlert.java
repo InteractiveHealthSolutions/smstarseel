@@ -27,24 +27,33 @@ public class ServiceCrashAlert extends TimerTask{
 				if(device.getDateLastCalllogPing() != null && DateUtils.differenceBetweenIntervals(new Date(), device.getDateLastCalllogPing(), TIME_INTERVAL.HOUR) > 2){
 					message += "\nProject: " + device.getProject().getName();
 					message += "\nService: CALL_LOG";
+					message += "\nImei: "+device.getImei();
+					message += "\nSim: "+device.getSim();
+					message += "\nDate Added: "+device.getDateAdded();
 					message += "\nLast Ping: " + device.getDateLastCalllogPing();
 				}
 				
 				if(device.getDateLastInboundPing() != null && DateUtils.differenceBetweenIntervals(new Date(), device.getDateLastInboundPing(), TIME_INTERVAL.HOUR) > 2){
 					message += "\nProject: " + device.getProject().getName();
 					message += "\nService: INBOUND";
+					message += "\nImei: "+device.getImei();
+					message += "\nSim: "+device.getSim();
+					message += "\nDate Added: "+device.getDateAdded();
 					message += "\nLast Ping: " + device.getDateLastInboundPing();
 				}
 				
 				if(device.getDateLastOutboundPing() != null && DateUtils.differenceBetweenIntervals(new Date(), device.getDateLastOutboundPing(), TIME_INTERVAL.HOUR) > 2){
 					message += "\nProject: " + device.getProject().getName();
 					message += "\nService: OUTBOUND";
+					message += "\nImei: "+device.getImei();
+					message += "\nSim: "+device.getSim();
+					message += "\nDate Added: "+device.getDateAdded();
 					message += "\nLast Ping: " + device.getDateLastOutboundPing();
 				}
 			}
 			
 			if(!StringUtils.isEmptyOrWhitespaceOnly(message)){
-				String[] recpl = TarseelContext.getSetting(TarseelSetting.SERVICE_CRASH_ALERT_RECIPIENTS.NAME(), null).replaceAll(" ", "").split(",");
+				String[] recpl = TarseelContext.getSetting(TarseelSetting.ADMIN_EMAIL_ADDRESS.NAME(), null).replaceAll(" ", "").split(",");
 				EmailEngine.getEmailer().postSimpleMail(recpl, "Service Crashed", "Services crashed: \n"+message , "smstarseel@ird.org");
 			}
 		}

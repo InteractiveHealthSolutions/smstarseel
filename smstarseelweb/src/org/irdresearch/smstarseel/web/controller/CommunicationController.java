@@ -9,7 +9,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,10 +26,10 @@ import org.irdresearch.smstarseel.data.DataException;
 import org.irdresearch.smstarseel.data.InboundMessage;
 import org.irdresearch.smstarseel.data.InboundMessage.InboundStatus;
 import org.irdresearch.smstarseel.data.OutboundMessage;
+import org.irdresearch.smstarseel.data.OutboundMessage.OutboundStatus;
 import org.irdresearch.smstarseel.data.OutboundMessage.PeriodType;
 import org.irdresearch.smstarseel.data.OutboundMessage.Priority;
 import org.irdresearch.smstarseel.data.Project;
-import org.irdresearch.smstarseel.data.OutboundMessage.OutboundStatus;
 import org.irdresearch.smstarseel.web.util.ResponseUtil;
 import org.irdresearch.smstarseel.web.util.WebGlobals;
 import org.irdresearch.smstarseel.web.util.WebGlobals.CallQueryParams;
@@ -222,50 +221,6 @@ public class CommunicationController  extends DataDisplayController {
 		return resp;
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	@RequestMapping(value="/traverse_outbounds.do")
 	public @ResponseBody Map<String, Object> traverseOutbounds(HttpServletRequest request){
 		Map queryParams = request.getParameterMap();
