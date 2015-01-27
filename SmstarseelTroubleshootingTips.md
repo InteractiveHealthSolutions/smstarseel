@@ -1,10 +1,10 @@
 SMSTARSEEL
 ----------
 
-## TROUBLESHOOTING TIPS:
-##### Application crashes as opened: 
+### TROUBLESHOOTING TIPS:
+#### Application crashes as opened: 
 This can occur when you sdcard is installed. Make sure to install and mount an sdcard. If problem still persists contact program vendor.
-##### Application freezes on pressing `Login` button: 
+#### Application freezes on pressing `Login` button: 
 Wait for a minute. Connection retry interval is 30 sec. It would display respective error message after 30 sec.
 ##### Malformed IPV4 address: 
 The server address / url you provided is incorrect. Check if there are any spaces, linebreaks, special characters in server url. Make sure that url conform to standard url pattern.
