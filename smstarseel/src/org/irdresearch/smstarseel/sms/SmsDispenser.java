@@ -4,6 +4,7 @@ import org.irdresearch.smstarseel.TarseelService;
 import org.irdresearch.smstarseel.comm.HttpSender;
 import org.irdresearch.smstarseel.comm.SmsTarseelRequest;
 import org.irdresearch.smstarseel.constant.TarseelGlobals;
+import org.irdresearch.smstarseel.db.DataAccess;
 import org.irdresearch.smstarseel.db.TarseelSQLiteHelper;
 import org.irdresearch.smstarseel.global.RequestParam;
 import org.irdresearch.smstarseel.global.RequestParam.App_Service;
@@ -122,7 +123,7 @@ public class SmsDispenser extends TarseelService
 				
 				int submitAttempts = 1;
 				boolean isSubmitted = false;
-				while(submitAttempts <= 3 && !isSubmitted){
+				while(submitAttempts <= 3 && !isSubmitted) {
 					try{
 						JSONObject resp2 = HttpSender.sendLargeText(this, payload2);
 						if(resp2.get(RequestParam.ResponseCode.NAME).equals(RequestParam.ResponseCode.SUCCESS.CODE()))
@@ -141,12 +142,10 @@ public class SmsDispenser extends TarseelService
         			TarseelGlobals.addTo_CONSOLE_BUFFER(null, "Submitted..");
         		}
         		else {
-        			TarseelSQLiteHelper sql = null;
+        			
         			try{
-            			sql = new TarseelSQLiteHelper(this);
-            			sql.open();
-            			long id = sql.createUnsubmittedOutbound(payload2.toString());
-            			sql.close();
+        				DataAccess dataAccess = DataAccess.getInstance(this);
+            			long id = dataAccess.createUnsubmittedOutbound(payload2.toString());
         			}
         			catch (Exception e) {
 						e.printStackTrace();

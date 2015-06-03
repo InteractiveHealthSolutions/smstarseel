@@ -6,6 +6,7 @@ import org.irdresearch.smstarseel.TarseelService;
 import org.irdresearch.smstarseel.comm.HttpSender;
 import org.irdresearch.smstarseel.comm.SmsTarseelRequest;
 import org.irdresearch.smstarseel.constant.TarseelGlobals;
+import org.irdresearch.smstarseel.db.DataAccess;
 import org.irdresearch.smstarseel.db.TarseelSQLiteHelper;
 import org.irdresearch.smstarseel.global.RequestParam;
 import org.irdresearch.smstarseel.util.FileUtil;
@@ -32,9 +33,8 @@ public class CleanupService extends TarseelService
 	private static final String CLEANUP_SRV_REPEAT_INTERVAL_SEC_PREF_NAME = "CLEANUP_SRV_REPEAT_INTERVAL_SEC";
 
 	protected void runTask() throws Exception{
-		TarseelSQLiteHelper sql = new TarseelSQLiteHelper(this);
-		sql.open();
-		Map<Long, String> oldres = sql.getAllUnsubmittedOutbound();
+		DataAccess dataAccess = DataAccess.getInstance(this);
+		Map<Long, String> oldres = dataAccess.getAllUnsubmittedOutbound();
 		TarseelGlobals.addTo_CONSOLE_BUFFER(LOG_TAG, "fetched "+oldres.size()+" unsubmitted outbounds");
 		for (Long id : oldres.keySet()) {
 			SmsTarseelRequest payload2 = SmsTarseelRequest.fromString(oldres.get(id));
@@ -42,7 +42,7 @@ public class CleanupService extends TarseelService
 				JSONObject resp2 = HttpSender.sendLargeText(this, payload2);
 				if(resp2.get(RequestParam.ResponseCode.NAME).equals(RequestParam.ResponseCode.SUCCESS.CODE()))
 				{
-					sql.deleteUnsubmittedOutbound(id);
+					dataAccess.deleteUnsubmittedOutbound(id);
 				}
 			}catch (Exception e) {
 				TarseelGlobals.addTo_CONSOLE_BUFFER(LOG_TAG, "Exception:"+e.getMessage());
@@ -50,7 +50,6 @@ public class CleanupService extends TarseelService
 			    FileUtil.writeLog(e);
 			}
 		}
-		TarseelGlobals.addTo_CONSOLE_BUFFER(LOG_TAG, "Submitted old sent result..");
-		sql.close();
+		TarseelGlobals.addTo_CONSOLE_BUFFER(LOG_TAG, "Submitted old sent result..");;
 	}
 }
