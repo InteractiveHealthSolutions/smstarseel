@@ -12,30 +12,50 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class TarseelSQLiteHelper extends SQLiteOpenHelper {
+	
+	private static TarseelSQLiteHelper instance;
+	
+	public static TarseelSQLiteHelper getInstance(Context context) {
+		if(instance == null) {
+			instance = new TarseelSQLiteHelper(context);
+		}
+		
+		return instance;
+	}
 
 	public enum Column_unsubmitted_outbound {
 		_id,
 		json
 	}
+	
+	public enum Column_inbound_messages {
+		_id,
+		json
+	}
+	
 	public enum SmsTarseelTables{
-		unsubmitted_outbound
+		unsubmitted_outbound,
+		unuploaded_inbounds
 	}
 
 	private static final String DATABASE_NAME = "smstarseel.db";
 	private static final int DATABASE_VERSION = 1;
-	private SQLiteDatabase database;
 
 	// Database creation sql statement
-	private static final String DATABASE_CREATE = "create table "
+	private static final String TABLE_OUTBOUND_UNSUBMITTED = "create table "
 			+ SmsTarseelTables.unsubmitted_outbound + "(" + Column_unsubmitted_outbound._id	+ " integer primary key autoincrement, " + Column_unsubmitted_outbound.json	+ " text not null);";
+	
+	private static final String TABLE_RECEIVED_MESSAGES = "create table "
+			+ SmsTarseelTables.unuploaded_inbounds + "(" + Column_inbound_messages._id	+ " text primary key, " + Column_inbound_messages.json	+ " text not null);";
 
-	public TarseelSQLiteHelper(Context context) {
+	private TarseelSQLiteHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
-
+	
 	@Override
 	public void onCreate(SQLiteDatabase database) {
-		database.execSQL(DATABASE_CREATE);
+		database.execSQL(TABLE_OUTBOUND_UNSUBMITTED);
+		database.execSQL(TABLE_RECEIVED_MESSAGES);
 	}
 
 	@Override
@@ -44,41 +64,8 @@ public class TarseelSQLiteHelper extends SQLiteOpenHelper {
 			"Upgrading database from version " + oldVersion + " to "
 			+ newVersion + ", which will destroy all old data");
 		db.execSQL("DROP TABLE IF EXISTS " + SmsTarseelTables.unsubmitted_outbound);
+		db.execSQL("DROP TABLE IF EXISTS " + SmsTarseelTables.unuploaded_inbounds);
 		onCreate(db);
 	}
 
-	public void open() throws SQLException {
-		database = super.getWritableDatabase();
-	}
-
-	public void close() {
-		super.close();
-	}
-
-	public long createUnsubmittedOutbound(String json) {
-		ContentValues values = new ContentValues();
-		values.put(Column_unsubmitted_outbound.json.name(), json);
-		return database.insert(SmsTarseelTables.unsubmitted_outbound.name(), null, values);
-	}
-
-	public void deleteUnsubmittedOutbound(long id) {
-		database.delete(SmsTarseelTables.unsubmitted_outbound.name(), Column_unsubmitted_outbound._id + " = " + id, null);
-	}
-
-	public Map<Long, String> getAllUnsubmittedOutbound() {
-		Cursor cursor = database.query(SmsTarseelTables.unsubmitted_outbound.name(), null, null, null, null, null, null);
-		try{
-			Map<Long, String> map = new HashMap<Long, String>();
-			while (cursor.moveToNext()) {
-				map.put(cursor.getLong(cursor.getColumnIndex(Column_unsubmitted_outbound._id.name())), cursor.getString(cursor.getColumnIndex(Column_unsubmitted_outbound.json.name())));
-			}
-	
-			return map;
-		}
-		finally{
-			if(cursor != null) 
-				if (!cursor.isClosed())
-					cursor.close();
-		}
-	}
 }

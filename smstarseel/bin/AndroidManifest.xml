@@ -106,6 +106,13 @@
         <service android:enabled="true" android:name=".sms.SmsCollector" />
         <service android:enabled="true" android:name=".call.CallLogReader" />
         
+        <receiver android:name="org.irdresearch.smstarseel.sms.SMSBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED"  >
+                </action>
+            </intent-filter>
+        </receiver>
+
         <receiver
             android:name=".TarseelAtBootReceiver"
             android:enabled="true"
