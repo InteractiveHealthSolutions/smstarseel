@@ -7,7 +7,7 @@ id="WebApp_ID" version="2.5">
 
   <display-name>Sms Tarseel</display-name>
   <welcome-file-list>
-    <welcome-file>smstarseel.jsp</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
   
   <filter> 
