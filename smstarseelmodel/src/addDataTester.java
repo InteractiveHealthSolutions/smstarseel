@@ -39,7 +39,7 @@ public class addDataTester {
 		sc.getSmsService().createNewOutboundSms(cellNum, text, c.getTime(), Priority.HIGH, 24, PeriodType.HOUR, 1, null);
 		}
 		
-		sc.commitTransaction();
+		//sc.commitTransaction();
 
 		sc.closeSession();
 
