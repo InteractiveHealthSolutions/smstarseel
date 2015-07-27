@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+    android:background="#33ABF9"
+    
+    android:layout_gravity="center">
+<LinearLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" 
+   >
+<TextView
+    android:id="@+id/registernote"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginTop="30dp"
+    android:text=""
+    android:textAppearance="?android:attr/textAppearanceLarge"
+    android:textColor="#f6ff00"
+    android:textSize="20sp"
+    android:typeface="monospace" />
+ <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/projectis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+       
+        android:text="Project : "
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#f6ff00"
+        android:textSize="16sp"
+        android:typeface="monospace"
+         />
+
+    <TextView
+        android:id="@+id/projectname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+       
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceMedium"
+         android:textColor="#f6ff00"
+        android:textSize="16sp"
+        android:typeface="monospace" />
+    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/welcome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:text="@string/devregisterheader"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#f6ff00"
+                android:textSize="16sp"
+                android:typeface="monospace" />
+
+            <TextView
+                android:id="@+id/welcomeuser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:paddingRight="3dp"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#000000"
+                 android:textSize="16sp"
+                android:typeface="monospace" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/doitnote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:paddingRight="3dp"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:typeface="monospace" />
+
+         <TextView
+                    android:id="@+id/simnumbertext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/simnumstr"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_marginLeft="20dp"
+        			android:layout_marginTop="20dp"
+        			android:paddingRight="3dp"
+        			android:textColor="#000000"
+        			 android:textSize="16sp"
+        			android:typeface="monospace" />
+        
+                 <EditText
+                     android:id="@+id/simnumedtxt"
+                     android:layout_width="fill_parent"
+                     android:layout_height="wrap_content"
+                     android:layout_marginLeft="20dp"
+               		 android:layout_marginRight="20dp"
+                	 android:layout_marginTop="5dp"
+                	 android:ems="10"
+                	 android:typeface="monospace" 
+                     android:inputType="number" />
+                 <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Choose Project"
+                    android:textAppearance="?android:attr/textAppearanceMedium" 
+                    android:layout_marginLeft="20dp"
+        			android:layout_marginTop="10dp"
+        			android:paddingRight="3dp"
+        			 android:textSize="16sp"
+        			android:textColor="#000000"
+        			android:typeface="monospace" />
+                  <Spinner
+                    android:id="@+id/devregisterddp"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"  
+                    android:layout_marginLeft="20dp"
+       				android:layout_marginTop="5dp"
+       				 android:hint="Select Project"
+       				android:layout_marginRight="20dp"
+        			android:paddingRight="3dp"
+        			 android:ems="10"
+        			android:textColor="#000000"
+       				android:typeface="monospace"
+                  android:prompt="@string/select_project" />
+
+                  <Button
+                      android:id="@+id/button1"
+                      android:layout_width="100dp"
+                      android:layout_height="50dp"
+                      android:layout_marginLeft="24dp"
+                      android:background="#0036ff"
+                      android:onClick="@string/registerClickHandler"
+                      android:text="@string/devRegisterstr"
+                      android:textColor="#FFFFFF"
+                      android:typeface="monospace"
+                      android:layout_marginTop="20dp" 
+                      />
+
+        <TextView
+            android:id="@+id/regDeviceMessagelbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+       
+ 
+       
+    </LinearLayout>
+<TextView
+        android:id="@+id/txtVwCopyrights"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:text="@string/copy_rights"
+        android:textColor="#000000"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+</RelativeLayout>

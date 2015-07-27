@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent" >
+ 
+ <item android:id="@+id/settings" android:title="Settings" ></item>
+    <item android:id="@+id/viewstatus" android:title="Status of Variables"></item>
+    <item android:id="@+id/sendlogtoserver" android:title="Send Log to Server"></item>
+    <item android:id="@+id/switchproject" android:title="Switch Project"></item>
+    <item android:id="@+id/lockscreen" android:title="Lock Screen"></item>
+    <item android:id="@+id/logout" android:title="Logout"></item>
+
+</menu>

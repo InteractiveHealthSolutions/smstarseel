@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, SmsTarseelActivity!</string>
+    <string name="app_name">SmsTarseel</string>
+    <color name="backgroundcolor">#7CCCC4</color>
+    <color name="Red">#FF0000</color>
+    <color name="Cyan">#00FFFF</color>
+    <color name="Blue">#0000FF</color>
+    <color name="DarkBlue">#0000A0</color>
+	<color name="White">#FFFFFF</color>
+	<color name="Silver">#C0C0C0</color>
+	<color name="Grey">#808080</color>
+	<color name="Black">#000000</color>
+	<color name="LightPurple">#FF0080</color>
+	<color name="Orange">#FFA500</color>
+	<color name="Purple">#800080</color>
+	<color name="Brown">#A52A2A</color>
+	<color name="Yellow">#FFFF00</color>
+	<color name="Maroon">#800000</color>
+	<color name="Lime">#00FF00</color>
+	<color name="Green">#008000</color>
+	<color name="Fuchsia">#FF00FF</color>
+	<color name="OliveLight">#818311</color>
+	<color name="OliveDark">#A5A555</color>
+	<string name="devRegisterstr">Register</string>
+	<string name="devregisterheader">Register Device</string>
+	<string name="registerClickHandler">registerClickHandler</string>
+	<string name="homeListClickHandler">homeListClickHandler</string>
+	<string name="defaultClockStr">Clock</string>
+	<string name="defaultStatusStr">Tarseel App Status</string>
+	<string name="unlockscreenstr">Unlock Screen</string>
+	<string name="unlockClickHandler">unlockClickHandler</string>
+	<string name="ookClickHandler">ookClickHandler</string>
+	<string name="serverurlstr">Server URL</string>
+	<string name="commportstr">Comm Port</string>
+	<string name="simnumstr">Sim Num</string>
+	<string name="commTypeClickHandler">commTypeClickHandler</string>
+	<string name="consoleViewStr">Console Log</string>
+	<string name="onConsoleLogtblrClick">onConsoleLogtblrClick</string>
+	<string name="smsDispenserstr">Sms Dispenser</string>
+	<string name="smsCollectorstr">Sms Collector</string>
+	<string name="calllogReaderstr">Call Log Reader</string>
+	<string name="lockScreenstr">Lock Screen</string>
+	<string name="settingsViewstr">Settings</string>
+	<string name="statusViewstr">View Status</string>
+	<string name="logSendServerstr">Send Log \n to Server</string>
+	<string name="logoutstr">Logout</string>
+	<string name="runtimeText">AtRuntime</string>
+</resources>

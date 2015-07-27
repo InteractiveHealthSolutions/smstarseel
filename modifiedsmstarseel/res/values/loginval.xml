@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="loginHeader">Login Details</string>
+<string name="loginButton">Login</string>
+
+<string name="usernameHint">Enter username</string>
+<string name="passwordHint">Enter password</string>
+<string name="loginClickHandler">loginClickHandler</string>
+<string name="emptyLoginValueError">empty username or passwords are unacceptable</string>
+    
+</resources>
