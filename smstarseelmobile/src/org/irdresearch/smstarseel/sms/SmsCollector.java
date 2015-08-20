@@ -40,19 +40,19 @@ public class SmsCollector extends TarseelService
 	private static final String LOG_TAG = "SmsCollector";
 	private static final String SERVICE_UID = "org.irdresearch.smstarseel.sms.SmsCollector";
 
-	private static final String SMS_ID = Telephony.Sms.Inbox._ID;//"_id";//  (long)
-	private static final String SMS_THREAD_ID = Telephony.Sms.Inbox.THREAD_ID;//"thread_id";//   (long)
-	private static final String SMS_ADDRESS = Telephony.Sms.Inbox.ADDRESS;//"address";//   (String)
+	public static final String SMS_ID = Telephony.Sms.Inbox._ID;//"_id";//  (long)
+	public static final String SMS_THREAD_ID = Telephony.Sms.Inbox.THREAD_ID;//"thread_id";//   (long)
+	public static final String SMS_ADDRESS = Telephony.Sms.Inbox.ADDRESS;//"address";//   (String)
 	//private static final String SMS_PERSON = "person";//   (String)
-	private static final String SMS_RECEIVE_DATE = Telephony.Sms.Inbox.DATE;//"date";//     (long)
+	public static final String SMS_RECEIVE_DATE = Telephony.Sms.Inbox.DATE;//"date";//     (long)
 //	private static final String SMS_SENT_DATE = Telephony.Sms.Inbox.DATE_SENT;//"date_sent";//     (long)
 	//private static final String protocol
-	private static final String SMS_READ = Telephony.Sms.Inbox.READ;//"read";
-	private static final String SMS_STATUS = Telephony.Sms.Inbox.STATUS;//"status";
-	private static final String SMS_TYPE = Telephony.Sms.Inbox.TYPE;//"type";
+	public static final String SMS_READ = Telephony.Sms.Inbox.READ;//"read";
+	public static final String SMS_STATUS = Telephony.Sms.Inbox.STATUS;//"status";
+	public static final String SMS_TYPE = Telephony.Sms.Inbox.TYPE;//"type";
 	//private static final String reply_path_present
 	//private static final String subject    (String)
-	private static final String SMS_BODY = Telephony.Sms.Inbox.BODY;//"body";//    (String)
+	public static final String SMS_BODY = Telephony.Sms.Inbox.BODY;//"body";//    (String)
 	//private static final String service_center
 	//private static final String locked
 	//private static final String error_code
@@ -69,7 +69,6 @@ public class SmsCollector extends TarseelService
         if (!Telephony.Sms.getDefaultSmsPackage(this).equals(myPackageName)) {
             // App is not default.
         	TarseelGlobals.addTo_CONSOLE_BUFFER(LOG_TAG, "NOT default app. Cannot proceed.");
-	        FileUtil.writeLog(LOG_TAG, "NOT default app. Cannot proceed.");
 		}
 		
 		int fetchsize = 6;

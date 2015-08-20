@@ -53,7 +53,6 @@ public class CallLogReader extends TarseelService
         if (!Telephony.Sms.getDefaultSmsPackage(this).equals(myPackageName)) {
             // App is not default.
         	TarseelGlobals.addTo_CONSOLE_BUFFER(LOG_TAG, "NOT default app. Cannot proceed.");
-	        FileUtil.writeLog(LOG_TAG, "NOT default app. Cannot proceed.");
 		}
         
 		int fetchsize = 6;
