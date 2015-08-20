@@ -85,7 +85,7 @@
             android:clickable="true"/>
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/non_default_app_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
