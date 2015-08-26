@@ -69,7 +69,7 @@ style="width:500px;height:540px;padding:0px;background: transparent;display: inl
 
 <table class="homesummary" style="width: 225px;min-height: 200px">
 	<tr>
-		<td colspan="14" ><span class="tableheadingmain">Calls</span></td>
+		<td colspan="14" ><span class="tableheadingmain">Call Logs</span></td>
 	</tr>
 	<c:forEach items="${calllogSummary}" var="clsr" varStatus="i">
 		<tr>

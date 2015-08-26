@@ -9,7 +9,6 @@
 	}
 %>
 <script type="text/javascript">
-<!--
 function submitForm() {
 	var username = document.getElementById("username").value;
 	var pwd = document.getElementById("password").value;
@@ -25,7 +24,6 @@ function submitForm() {
 	}
 	document.getElementById("formId").submit();
 }
-//-->
 </script>
 <form id="formId" name="formId" method="post">
 	<div align="center" class="divCenter">
@@ -46,7 +44,7 @@ function submitForm() {
 			</tr>
 			<tr>
 				<td></td>
-				<td><input type="button" id="submitBtn" value="Login" onclick="submitForm();"></td>
+				<td><input type="submit" id="submitBtn" value="Login" onclick="submitForm();"></td>
 			</tr>
 		</table>
 	</div>

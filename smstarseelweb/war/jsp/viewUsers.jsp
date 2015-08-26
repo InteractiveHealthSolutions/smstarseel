@@ -25,7 +25,7 @@
 <script type="text/javascript"><!--
 document.getElementById("userStatus").selectedIndex=0;
 //--></script>
-        <a class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="loadthedata();">Query</a>
+        <a class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="loadthedata();">Search</a>
 </div>
 
 <div style="float: right;">

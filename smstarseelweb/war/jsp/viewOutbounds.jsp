@@ -33,7 +33,7 @@ Due Date From : <input id="dtbDueFrom" class="easyui-datebox" style="width:100px
 <script type="text/javascript"><!--
 document.getElementById("smsStatus").selectedIndex=0;
 //--></script>
-        <a class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="loadthedata(0);">Query</a>
+        <a class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="loadthedata(0);">Search</a>
 </div>
 
 <div style="float: right;">
@@ -45,6 +45,13 @@ document.getElementById("smsStatus").selectedIndex=0;
 
 </div>
 <script>
+$( document ).ready(function() {
+    if('${param.sendSmsModal}'){
+    	$('#winSendSms').window('open');
+    }
+});
+
+
 var queryParams = new Object();
 queryParams['<%=QueryParams.PAGE_SIZE%>'] = 20;
 queryParams['<%=QueryParams.PAGE_NUMBER%>'] = 1;
@@ -85,7 +92,6 @@ $('input[id^="txt"]').on( 'blur', function() {
 // INIT REFERENCE NUMBER SEARCHBOX
 $('#sbReferenceNumber').searchbox({ 
     searcher:function(value, name){  
-		queryParams['<%=CommunicationQueryParams.REFERENCE_NUMBER%>'] = value;
 		loadthedata(0);
     },  
     prompt:'Enter reference number'
@@ -99,7 +105,7 @@ $(function(){
 		iconCls:'icon-reminder',
 		width:750,
 		height:550,
-		nowrap: true,
+		nowrap: false,
 		autoRowHeight: false,
 		//url:'/smstarseelweb/communication/get_data.do',
 		loader: loadthedata,
@@ -107,7 +113,7 @@ $(function(){
 		singleSelect: true,
 		idField:'referenceNumber',
 		frozenColumns:[[
-               {title:'Reference Number',field:'referenceNumber',width:130,sortable:true}
+               {title:'Reference Number',field:'referenceNumber',width:140,sortable:true}
 		]],
 		columns:[[  
 		    {field:'recipient',title:'Recipient',width:100}, 
@@ -118,13 +124,10 @@ $(function(){
 					else {return value;}
 				}
 		    },  
-		    {field:'sentDate',title:'Sent Date',width:135, 
+		    {field:'sentdate',title:'Sent Date',width:135, 
 		    	formatter: function(value,row,index){
-					if (value != null && value != '') {
-						return new Date(value).toString('dd-MMM-yyyy HH:mm:ss');
-					} else {
-						return value;
-					}
+		    		if (value != null && value != ''){return new Date(value).toString('dd-MMM-yyyy HH:mm:ss');} 
+					else {return value;}
 				}
 		    },  
 		    {field:'tries',title:'Tries',width:40}, 
@@ -140,7 +143,7 @@ $(function(){
 		    {field:'failureCause',title:'Failure Cause',width:105}, 
 		    {field:'imei',title:'Imei',width:115},
 		    {field:'originator',title:'Originator',width:90},  
-		    {field:'text',title:'Text',width:200}, 
+		    {field:'text',title:'Text',width:400}, 
 		]]  , 
 		rownumbers:true,
 		toolbar: '#tbFilterList',
@@ -166,6 +169,7 @@ function downloadtheData() {
 function loadthedata(downloadRequest){
 	/* var dgChoosenData = new Object();
 	dgChoosenData['rows']=[]; */
+	queryParams['<%=CommunicationQueryParams.REFERENCE_NUMBER%>'] = $('#sbReferenceNumber').searchbox('getValue');
 	queryParams['<%=OutboundQueryParams.DUEDATE_FROM%>'] = $('#dtbDueFrom').datebox('getValue');
 	queryParams['<%=OutboundQueryParams.DUEDATE_TO%>'] = $('#dtbDueTo').datebox('getValue');
 	queryParams['<%=OutboundQueryParams.SENTDATE_FROM%>'] = $('#dtbSentFrom').datebox('getValue');

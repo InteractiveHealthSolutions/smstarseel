@@ -78,7 +78,6 @@ function validateCellNum(cellnum){
 		rgx = "^\\d{3,15}$";
 	}
 	var reg = new RegExp(rgx);
-	alert(reg);
 	 if(reg.test(cellnum) == false) {
 	      return false;
 	 }
