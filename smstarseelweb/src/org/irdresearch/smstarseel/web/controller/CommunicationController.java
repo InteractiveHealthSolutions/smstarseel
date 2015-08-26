@@ -308,7 +308,7 @@ public class CommunicationController  extends DataDisplayController {
 				Date receivedateFrom = StringUtils.isEmptyOrWhitespaceOnly(receivedateF)?null:WebGlobals.GLOBAL_SDF_DATE.parse(receivedateF);
 				Date receivedateTo = StringUtils.isEmptyOrWhitespaceOnly(receivedateT)?null:WebGlobals.GLOBAL_SDF_DATE.parse(receivedateT);
 				
-				items = tsc.getSmsService().findInbound(receivedateFrom, receivedateTo, ibst, originator, null, imei, null, false, (pageNumber-1)*pageSize, pageSize);
+				items = tsc.getSmsService().findInbound(receivedateFrom, receivedateTo, ibst, null, originator, imei, null, false, (pageNumber-1)*pageSize, pageSize);
 			}
 			
 			map.put("rows", ResponseUtil.prepareDataResponse((ArrayList<InboundMessage>) items, null));

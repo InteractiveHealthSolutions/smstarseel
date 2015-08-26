@@ -199,14 +199,14 @@ public class AdminController extends DataDisplayController{
 				map.put("message", "Setting not found.");
 				return map;
 			}
-			else if(newValue.matches(set.getValidatorRegex())){
+			else if(!newValue.matches(set.getValidatorRegex().replace("\\\\", "\\"))){
 				map.put("message", "Value specified doesnot conform to pattern allowed for setting.");
 				return map;
 			}
 			
 			TarseelContext.updateSetting(settingName, newValue, userlgd);
 	
-			map.put("message", "Setting updated successfully. Refresh to update view");
+			map.put("message", "SUCCESS: Setting updated successfully. Refresh to update view");
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -218,6 +218,19 @@ public class AdminController extends DataDisplayController{
 		
 		return map;
 	}
+	
+	public static void main(String[] args) {
+		System.out.println("maiooo.hhh@iii.com".matches("(((\\w+)|(\\w+\\.+\\w+)|(\\w+\\-+\\w+))\\@((\\w+)|(\\w+\\-\\w+))\\.\\w{2,4})(\\,\\s?((\\w+)|(\\w+\\.+\\w+)|(\\w+\\-+\\w+))\\@((\\w+)|(\\w+\\-\\w+))\\.\\w{2,4})*"));
+	}
+	
+//	public static void main(String[] args) throws InstanceAlreadyExistsException, InstantiationException, IllegalAccessException, DataException {
+//		TarseelContext.instantiate(null, "smstarseel.cfg.xml");
+//		TarseelServices tsc = TarseelContext.getServices();
+//		List<User> items = tsc.getUserService().findUserByCriteria(null, null, null, false, 0, 100);
+//		tsc.closeSession();
+//		ArrayList<User> op = ResponseUtil.prepareDataResponse((ArrayList<User>) items, new String[]{"roles.permissions"});
+//		System.out.println(op);
+//	}
 	
 	@RequestMapping(value="/edit_project.dm")
 	public @ResponseBody Map<String, Object> editProject(HttpServletRequest request){
@@ -382,7 +395,7 @@ public class AdminController extends DataDisplayController{
 				}
 			}
 	
-			map.put("message", errorMsg==""?"User added successfully":errorMsg);
+			map.put("message", errorMsg==""?"SUCCESS: User added successfully":errorMsg);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -470,15 +483,6 @@ public class AdminController extends DataDisplayController{
 		return map;
 	}
 	
-	public static void main(String[] args) throws InstanceAlreadyExistsException, InstantiationException, IllegalAccessException, DataException {
-		TarseelContext.instantiate(null, "smstarseel.cfg.xml");
-		TarseelServices tsc = TarseelContext.getServices();
-		List<User> items = tsc.getUserService().findUserByCriteria(null, null, null, false, 0, 100);
-		tsc.closeSession();
-		ArrayList<User> op = ResponseUtil.prepareDataResponse((ArrayList<User>) items, new String[]{"roles.permissions"});
-		System.out.println(op);
-	}
-	
 	@RequestMapping(value="/traverse_users.do")
 	public @ResponseBody Map<String, Object> traverseUsers(HttpServletRequest request){
 		Map queryParams = request.getParameterMap();
@@ -509,7 +513,7 @@ public class AdminController extends DataDisplayController{
 				}
 			}
 			map.put("rows", cpu);
-		    //map.put("total", tsc.getUserService().LAST_QUERY_TOTAL_ROW__COUNT(User.class).intValue());
+		    map.put("total", tsc.getUserService().LAST_QUERY_TOTAL_ROW__COUNT().intValue());
 		}
 		catch (DataException e) {
 			e.printStackTrace();
