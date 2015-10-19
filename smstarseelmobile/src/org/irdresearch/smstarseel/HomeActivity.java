@@ -48,9 +48,9 @@ public class HomeActivity extends SmsTarseelForm implements android.view.View.On
 //private TextView smsCollectorStatustv;
 	//private TextView callLogReaderStatustv;
 	
-	private Switch	smsDispenserToggle;
-	private Switch	smsCollectorToggle;
-	private Switch	CallLogToggle;
+	private ToggleButton	smsDispenserToggle;
+	private ToggleButton	smsCollectorToggle;
+	private ToggleButton	CallLogToggle;
 	private TextView console;
 	private TextView projectname;
 	//private Drawable dStart;
@@ -62,13 +62,13 @@ public class HomeActivity extends SmsTarseelForm implements android.view.View.On
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home);
 		
-		smsDispenserToggle = (Switch) findViewById(R.id.smsdispensertoggle);
+		smsDispenserToggle = (ToggleButton) findViewById(R.id.smsdispensertoggle);
 		smsDispenserToggle.setOnClickListener(this);
 		
-		smsCollectorToggle = (Switch) findViewById(R.id.smscollectortoggle);
+		smsCollectorToggle = (ToggleButton) findViewById(R.id.smscollectortoggle);
 		smsCollectorToggle.setOnClickListener(this);
 		
-		CallLogToggle = (Switch) findViewById(R.id.calllogtoggle);
+		CallLogToggle = (ToggleButton) findViewById(R.id.calllogtoggle);
 		CallLogToggle.setOnClickListener(this);
 	
 		imgConsole = (ImageView) findViewById(R.id.imgConsole);

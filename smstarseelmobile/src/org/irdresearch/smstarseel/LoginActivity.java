@@ -51,6 +51,7 @@ public class LoginActivity extends SmsTarseelForm  {
 	private TextView nondefapp;
 	private Button login;
 	private Button relogin;
+	private Button unlock;
 	private Button changedap;
 	
 	
@@ -76,6 +77,7 @@ public class LoginActivity extends SmsTarseelForm  {
         
        login= (Button)findViewById(R.id.loginbtn);
        relogin= (Button)findViewById(R.id.reloginbtn);
+       unlock= (Button)findViewById(R.id.unlockscrbtn);
        changedap = (Button) findViewById(R.id.change_default_app_btn);
        nondefapp = (TextView) findViewById(R.id.non_default_app_tv);
       
@@ -124,6 +126,36 @@ public class LoginActivity extends SmsTarseelForm  {
     {
     	super.onStart();
     	
+    	final String myPackageName = getPackageName();
+        if (!Telephony.Sms.getDefaultSmsPackage(this).equals(myPackageName)) {
+            // App is not default.
+            // Show the "not currently set as the default SMS app" interface
+            nondefapp.setVisibility(View.VISIBLE);
+            changedap.setVisibility(View.VISIBLE);
+            
+            login.setVisibility(View.GONE);
+            relogin.setVisibility(View.GONE);
+            unlock.setVisibility(View.GONE);
+
+            // Set up a button that allows the user to change the default SMS app
+            Button button = (Button) findViewById(R.id.change_default_app_btn);
+            button.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+                    intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, myPackageName);
+                    startActivity(intent);
+                }
+            });
+            
+            return; // can not proceed if app is not default
+        } 
+    	
+    	
+        // App is the default.
+        // Hide the "not currently set as the default SMS app" interface
+        nondefapp.setVisibility(View.GONE);
+        changedap.setVisibility(View.GONE);
+    	
     	if(TarseelGlobals.ENABLE_UNLOCK 
     			|| SmsDispenser.getInstance().isServiceStarted(this)
     			|| SmsCollector.getInstance().isServiceStarted(this)
@@ -157,21 +189,19 @@ public class LoginActivity extends SmsTarseelForm  {
 				return;
 			}
 
-			((Button) findViewById(R.id.unlockscrbtn))
-					.setVisibility(Button.VISIBLE);
 			serverurl.setVisibility(EditText.INVISIBLE);
 			servertv.setVisibility(TextView.INVISIBLE);
 			nametv.setText("Unlock Project");
+			unlock.setVisibility(Button.VISIBLE);
 			relogin.setVisibility(Button.VISIBLE);
 			login.setVisibility(Button.INVISIBLE);
 		} else {
-			((Button) findViewById(R.id.unlockscrbtn))
-					.setVisibility(Button.INVISIBLE);
 			serverurl.setVisibility(EditText.VISIBLE);
 			servertv.setVisibility(TextView.VISIBLE);
 			nametv.setText("Login Details");
 			login.setVisibility(Button.VISIBLE);
 			relogin.setVisibility(Button.INVISIBLE);
+			unlock.setVisibility(Button.INVISIBLE);
 			// button alignment dynamically
 		}
     	username.setText("");
@@ -180,40 +210,6 @@ public class LoginActivity extends SmsTarseelForm  {
     	serverurl.setText(url);
     	String portnum = TarseelGlobals.getPreference(this, TarseelGlobals.COMM_PORT_NUM_PREF_NAME, "0000");
     	commport.setText(portnum);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        final String myPackageName = getPackageName();
-        if (!Telephony.Sms.getDefaultSmsPackage(this).equals(myPackageName)) {
-            // App is not default.
-            // Show the "not currently set as the default SMS app" interface
-            nondefapp.setVisibility(View.VISIBLE);
-            changedap.setVisibility(View.VISIBLE);
-            
-            login.setVisibility(View.GONE);
-            relogin.setVisibility(View.GONE);
-
-            // Set up a button that allows the user to change the default SMS app
-            Button button = (Button) findViewById(R.id.change_default_app_btn);
-            button.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
-                    intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, myPackageName);
-                    startActivity(intent);
-                }
-            });
-        } else {
-            // App is the default.
-            // Hide the "not currently set as the default SMS app" interface
-            nondefapp.setVisibility(View.GONE);
-            changedap.setVisibility(View.GONE);
-            
-            login.setVisibility(View.VISIBLE);
-            relogin.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
