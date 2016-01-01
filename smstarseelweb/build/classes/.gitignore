@@ -1,9 +1,8 @@
-/c3p0-config.xml
-/log4j.properties
-/logback.xml
 /org/
-/smstarseel.properties
 /FileUploadTest.class
+/HttpResponse.class
+/HttpSender.class
+/HttpUtil.class
 /TestClass$TESTENUM.class
 /TestClass.class
 /addDataTester.class
