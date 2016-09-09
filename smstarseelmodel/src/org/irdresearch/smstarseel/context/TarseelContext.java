@@ -20,11 +20,20 @@ public class TarseelContext {
 
 	private static TarseelContext _instance;
 	private HashMap<String,Setting> currentSettings;
+	private static Properties properties;
+	
+	public static String property(String name, String defaultVal) {
+		if(properties == null){
+			return defaultVal;
+		}
+		return properties.getProperty(name, defaultVal);
+	}
 
-	private TarseelContext() {
+	private TarseelContext(Properties props) {
 		System.out.println("\nLoading Settings....");
 		currentSettings = getAllSettings();
 		System.out.println("\nSettings loaded successfully....");
+		TarseelContext.properties = props;
 	}
 	
 	private static SessionFactory sessionFactory;
@@ -43,7 +52,7 @@ public class TarseelContext {
 		// session factory must have been instantiated before we could use any method involving data
 		sessionFactory = HibernateUtil.getSessionFactory(properties, configFileName);
 
-		_instance = new TarseelContext();
+		_instance = new TarseelContext(properties);
 	}
 	
 	private static HashMap<String, Setting> getAllSettings() {

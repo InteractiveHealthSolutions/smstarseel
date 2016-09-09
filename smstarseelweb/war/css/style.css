@@ -156,6 +156,11 @@ font-size: 12px;
 
 /* ------------------------------------------- TEMPLATE END ------------------------------------------------ */
 
+.field-error{
+	color: red;
+	font-size: small;
+	display: block;
+}
 .divCenter {
 	margin-left: auto;
 	margin-right: auto;

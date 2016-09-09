@@ -11,7 +11,7 @@ import org.irdresearch.smstarseel.web.util.LoggedInUser;
 import org.irdresearch.smstarseel.web.util.UserSessionUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-public class SmstarseelRequestFilter /*implements Filter*/ extends OncePerRequestFilter{
+public class SmstarseelRequestFilter extends OncePerRequestFilter{
 
 	@Override
 	protected void doFilterInternal (HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

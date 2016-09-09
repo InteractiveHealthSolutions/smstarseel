@@ -17,8 +17,8 @@
     
 <!--     <bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
  -->    
-  	<bean id="filterHeader" class="org.irdresearch.smstarseel.web.controller.SmstarseelRequestFilter"/>
-  
+<!--   	<bean id="filterHeader" class="org.irdresearch.smstarseel.web.controller.SmstarseelRequestFilter"/>
+ -->  
     <bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
         <property name="prefix" value="/jsp/" />

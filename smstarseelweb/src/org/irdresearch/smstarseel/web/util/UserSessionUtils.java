@@ -1,6 +1,7 @@
 package org.irdresearch.smstarseel.web.util;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
@@ -8,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.irdresearch.smstarseel.SystemPermissions;
+import org.irdresearch.smstarseel.context.TarseelContext;
+import org.irdresearch.smstarseel.context.TarseelServices;
+import org.irdresearch.smstarseel.data.Service;
 import org.irdresearch.smstarseel.data.User;
 import org.irdresearch.smstarseel.service.UserServiceException;
 
@@ -29,6 +33,25 @@ public class UserSessionUtils {
 
 	private static LoggedInUser getLoggedInUser(String username){
 		return currentlyLoggedInUsers.get(username);
+	}
+	
+	public static Service getService(String authKey) {
+		TarseelServices tsc = TarseelContext.getServices();
+		try{
+			List l = tsc.getCustomQueryService().getDataByHQL("FROM Service WHERE authenticationKey ='"+authKey+"'");
+			if(l.size() == 0){
+				return null;
+			}
+			
+			return (Service) l.get(0);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		finally{
+			tsc.closeSession();
+		}
+		return null;
 	}
 	
 	public static void login(String username, User user, HttpServletRequest req , HttpServletResponse resp ){

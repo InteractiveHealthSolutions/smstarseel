@@ -11,8 +11,9 @@ public class AutomatedTasks {
 	 
 	 public static void instantiate() throws InstanceAlreadyExistsException{
 		 if(scheduler == null){
-			 scheduler = Executors.newScheduledThreadPool(1);
+			 scheduler = Executors.newScheduledThreadPool(2);
 			 scheduler.schedule(new DailySummaryNotifierJob(scheduler, null), 1, TimeUnit.MINUTES);
+			 scheduler.scheduleWithFixedDelay(new ServiceLogExecuterJob(), 1, 1, TimeUnit.MINUTES);
 		 }
 		 else {
 			 throw new InstanceAlreadyExistsException("An instance of AutomatedTasks already exists");

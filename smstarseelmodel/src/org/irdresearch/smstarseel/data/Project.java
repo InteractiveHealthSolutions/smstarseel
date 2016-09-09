@@ -13,7 +13,7 @@ public class Project {
 	@Id
 	@GeneratedValue
 	@Column(name = "projectId")
-	private int		projectId;
+	private Integer		projectId;
 
 	@Column(name = "name", unique = true)
 	private String	name;
@@ -21,12 +21,18 @@ public class Project {
 	@Column(name = "description")
 	private String	description;
 
-	public void setProjectId(int projectId)
+	public Project() { }
+	
+	public Project(int projectId) {
+		this.projectId = projectId;
+	}
+	
+	public void setProjectId(Integer projectId)
 	{
 		this.projectId = projectId;
 	}
 
-	public int getProjectId()
+	public Integer getProjectId()
 	{
 		return projectId;
 	}

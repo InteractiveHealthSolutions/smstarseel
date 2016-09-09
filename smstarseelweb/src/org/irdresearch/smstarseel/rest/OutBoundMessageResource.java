@@ -5,22 +5,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.irdresearch.smstarseel.context.TarseelContext;
 import org.irdresearch.smstarseel.context.TarseelServices;
 import org.irdresearch.smstarseel.data.OutboundMessage;
 import org.irdresearch.smstarseel.web.util.ResponseUtil;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping(value = "/rest/outbound")
+@RequestMapping(value = "/outbound")
 public class OutBoundMessageResource extends RestResource<OutboundMessage>{
 
-	@RequestMapping(value="/{referenceNumber}", method=RequestMethod.GET)
-	public @ResponseBody OutboundMessage getOutBoundByReferenceNumber(@PathVariable("referenceNumber") String referenceNumber) {
+	public OutboundMessage getByReferenceNumber(String referenceNumber) {
 		TarseelServices tsc = TarseelContext.getServices();
 		try {
 			return ResponseUtil.prepareDataResponse(tsc.getSmsService().findOutboundMessageByReferenceNumber(referenceNumber, true), null);
@@ -61,5 +59,10 @@ public class OutBoundMessageResource extends RestResource<OutboundMessage>{
 		p.add("periodType");
 		p.add("projectId");
 		return p;
+	}
+
+	@Override
+	public List<OutboundMessage> search(Integer projectId, HttpServletRequest request) {
+		return null;
 	}
 }

@@ -30,6 +30,8 @@ public class HibernateUtil {
 			conf.addAnnotatedClass(org.irdresearch.smstarseel.data.Project.class);
 			conf.addAnnotatedClass(org.irdresearch.smstarseel.data.Role.class);
 			conf.addAnnotatedClass(org.irdresearch.smstarseel.data.User.class);
+			conf.addAnnotatedClass(org.irdresearch.smstarseel.data.Service.class);
+			conf.addAnnotatedClass(org.irdresearch.smstarseel.data.ServiceLog.class);
 			
 			if(properties != null){
 				conf.setProperties(properties);
