@@ -1,5 +1,6 @@
-package org.irdresearch.smstarseel.rest.telenor;
+package org.irdresearch.smstarseel.rest.its;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Date;
@@ -19,12 +20,14 @@ import org.irdresearch.smstarseel.data.Service;
 import org.irdresearch.smstarseel.data.ServiceLog;
 import org.irdresearch.smstarseel.data.ServiceLog.ServiceLogStatus;
 import org.irdresearch.smstarseel.rest.ServiceResource;
-import org.irdresearch.smstarseel.rest.telenor.TelenorContext.Config;
+import org.irdresearch.smstarseel.rest.its.ITSContext.ITSConfig;
+import static org.irdresearch.smstarseel.rest.its.ITSContext.*;
 import org.irdresearch.smstarseel.rest.util.HttpResponse;
 import org.irdresearch.smstarseel.rest.util.HttpUtil;
 import org.irdresearch.smstarseel.rest.util.Utils;
 import org.joda.time.DateTime;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,14 +37,12 @@ import com.google.gson.JsonSyntaxException;
 import com.mysql.jdbc.StringUtils;
 
 @Controller
-@RequestMapping("/telenor/outbound")
-public class TelenorOutboundResource {
-	private Authenticate auth;
+@RequestMapping("/its/outbound")
+public class ITSOutboundResource {
 	private ServiceResource serviceResource;
 	
 	@Autowired
-	public TelenorOutboundResource(Authenticate auth, ServiceResource serviceResource) {
-		this.auth = auth;
+	public ITSOutboundResource(ServiceResource serviceResource) {
 		this.serviceResource = serviceResource;
 	}
 	
@@ -82,7 +83,6 @@ public class TelenorOutboundResource {
 		String from = Utils.getStringFilter("from", request);
 		String text = Utils.getStringFilter("text", request);
 		String mask = Utils.getStringFilter("mask", request);
-		Boolean unicode = Utils.getBooleanFilter("unicode", request);
 		String pp = Utils.getStringFilter("project", request);
 		String externalSystemMessageId = Utils.getStringFilter("id", request);
 		
@@ -121,24 +121,20 @@ public class TelenorOutboundResource {
 				return Utils.createMissingParamErrorResponse("mask", resp);
 			}
 	
-			String session_id = auth.getAuthenticatedSessionId();
-			if(session_id == null){
-				Utils.createErrorResponse("Unhandled error. Telenor authentication not successful.", resp);
-				return resp;
-			}
-					
-			Config obdu = Config.OUTBOUND_DISPATCH_URL;
-			if(!Config.isConfigured(obdu)){
+			ITSConfig obdu = ITSConfig.OUTBOUND_DISPATCH_URL;
+			if(!ITSConfig.isConfigured(obdu)){
 				return Utils.createMissingSettingErrorResponse(obdu.property(), resp);
 			}
 			
-			HttpResponse response = HttpUtil.post(Config.fullUrl(obdu) , 
-					outboundPayload(session_id, recipient, text, mask, unicode), "");
+			HttpResponse response = HttpUtil.post(getProperty(ITSConfig.BASE_URL, null), 
+					outboundPayload(obdu, recipient, text, mask), "");
+			
 			System.out.println(response.body());
-			Utils.createTelenorResponse(response, resp);
+			
+			Utils.createITSResponse(response, resp);
 			
 			if(resp.containsKey("SUCCESS") && (boolean) resp.get("SUCCESS")){
-				Long messageId = new Double(resp.get("data").toString()).longValue();
+				String messageId = resp.get("messageid").toString();
 				
 				Map<String, String> extras = new HashMap<>();
 				extras.put(SmsServiceConstants.EXTERNAL_SYSTEM_MESSAGE_ID.name(), externalSystemMessageId);
@@ -146,7 +142,7 @@ public class TelenorOutboundResource {
 				if(contactId != null){
 				extras.put(SmsServiceConstants.EXTERNAL_SYSTEM_CONTACT_ID.name(), contactId);
 				}
-				extras.put(SmsServiceConstants.TELENOR_MESSAGE_ID.name(), messageId.toString());
+				extras.put(SmsServiceConstants.ITS_MESSAGE_ID.name(), messageId);
 				
 				// SHOULD keep log of sent messages as well
 				String id = s.getServiceIdentifier();
@@ -154,24 +150,25 @@ public class TelenorOutboundResource {
 					id = s.getServiceName();
 				}
 				
-				String referenceNumber = TelenorContext.createReferenceNumber(messageId);
-				OutboundMessage om = Utils.createOutbound(new Date(), id, mask, recipient, text, new Date(), 1,	projectId, 
-						systemProcessingStartDate, OutboundStatus.WAITING, referenceNumber , extras);
+				OutboundMessage om = Utils.createOutbound(new Date(), id, mask, recipient, text, new Date(), 1, 
+						projectId, systemProcessingStartDate, OutboundStatus.WAITING, messageId, extras);
 				
 				tsc.getCustomQueryService().save(om);
 				
 				resp.put("referenceNumber", om.getReferenceNumber());
 
-				String queryUrl = requestPath + "/query?"+SmsServiceConstants.TELENOR_MESSAGE_ID.name()+"="+messageId;
+				String queryUrl = requestPath + "/query?"+SmsServiceConstants.ITS_MESSAGE_ID.name()+"="+messageId;
 				ServiceLog sl = Utils.createServiceLog(2, true, projectId, queryUrl, "POST", s.getAuthenticationKey(), extras);
 				
-				tsc.getCustomQueryService().save(sl);
+				Serializable slId = tsc.getCustomQueryService().save(sl);
+				
+				resp.put(SmsServiceConstants.SERVICE_LOG_ID.name(), slId.toString());
 			}
 			else {
 				//TODO log sms in smstarseel and log a service that tries sending again.
 				// try resend after 4 hours
-				if(Config.isConfigured(Config.OUTBOUND_AUTO_RETRY)
-						&& TelenorContext.getProperty(Config.OUTBOUND_AUTO_RETRY, "false").equalsIgnoreCase("true"))
+				if(ITSConfig.isConfigured(ITSConfig.OUTBOUND_AUTO_RETRY)
+						&& ITSContext.getProperty(ITSConfig.OUTBOUND_AUTO_RETRY, "false").equalsIgnoreCase("true"))
 				{
 					String postUrl = requestPath + "/send?"+URLDecoder.decode(request.getQueryString(), "UTF-8");//here to would be whole string again
 					ServiceLog sl = Utils.createServiceLog(60*4, true, projectId, postUrl, "POST", s.getAuthenticationKey(), null);
@@ -185,8 +182,8 @@ public class TelenorOutboundResource {
 			// log for resend only incase of exception or internet issue
 			// try resend after 4 hours
 			
-			if(Config.isConfigured(Config.OUTBOUND_AUTO_RETRY)
-					&& TelenorContext.getProperty(Config.OUTBOUND_AUTO_RETRY, "false").equalsIgnoreCase("true"))
+			if(ITSConfig.isConfigured(ITSConfig.OUTBOUND_AUTO_RETRY)
+					&& ITSContext.getProperty(ITSConfig.OUTBOUND_AUTO_RETRY, "false").equalsIgnoreCase("true"))
 			{
 				String postUrl = requestPath + "/send?"+URLDecoder.decode(request.getQueryString(), "UTF-8");//here to would be whole string again
 				ServiceLog sl = Utils.createServiceLog(60*4, true, projectId, postUrl, "POST", s.getAuthenticationKey(), null);
@@ -207,14 +204,13 @@ public class TelenorOutboundResource {
 		return resp;
 	}
 	
-	private String outboundPayload(String session_id, String recipient, String text, String mask, Boolean unicode) {
-		String payload = "session_id="+session_id;
-		payload += "&to="+recipient;
-		payload += "&text="+text;
-		payload += "&mask="+mask;
-		if(unicode != null){
-			payload += "&unicode="+unicode;
-		}
+	private String outboundPayload(ITSConfig obdu, String recipient, String text, String mask) {
+		String payload = "action="+getProperty(obdu, null);
+		payload += "&username="+getProperty(ITSConfig.USERNAME, null);
+		payload += "&recipient="+recipient;
+		payload += "&messagedata="+text;
+		payload += "&password="+getProperty(ITSConfig.PASSWORD, null);
+		payload += "&originator="+mask;
 		
 		return payload;
 	}
@@ -223,54 +219,53 @@ public class TelenorOutboundResource {
 	public @ResponseBody Map<String, Object> queryOutbound(HttpServletRequest request) {
 		Map<String, Object> resp = new HashMap<String, Object>();
 
-		String msgId = Utils.getStringFilter(SmsServiceConstants.TELENOR_MESSAGE_ID.name(), request);
+		String msgId = Utils.getStringFilter(SmsServiceConstants.ITS_MESSAGE_ID.name(), request);
 		Integer serviceLogId = Utils.getIntegerFilter(SmsServiceConstants.SERVICE_LOG_ID.name(), request);
 		
 		if(msgId == null){
-			return Utils.createMissingParamErrorResponse(SmsServiceConstants.TELENOR_MESSAGE_ID.name(), resp);
+			return Utils.createMissingParamErrorResponse(SmsServiceConstants.ITS_MESSAGE_ID.name(), resp);
 		}
 		
-		String session_id = auth.getAuthenticatedSessionId();
-		if(session_id == null){
-			Utils.createErrorResponse("Unhandled error. Authentication not successfull.", resp);
-			
-			if(serviceLogId != null){
-				updateServiceLog(serviceLogId, ServiceLogStatus.PENDING, false, resp.toString());
-			}
-			
-			return resp;
+		String payload = "username="+getProperty(ITSConfig.USERNAME, null);
+		payload += "&msgid="+msgId;
+		payload += "&messagedata=extraparamteret";
+		payload += "&password="+getProperty(ITSConfig.PASSWORD, null);
+		payload += "&originator=extraparam";
+		
+		HttpResponse response = HttpUtil.post(getProperty(ITSConfig.OUTBOUND_QUERY_URL, null)+"?"+payload, "", "");
+	
+		System.out.println(response.body());
+		
+		String status = "";
+		try {
+			status = new JSONObject(response.body()).getJSONArray("data").getJSONObject(0).getString("status");
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
 		
-		Config obqm = Config.OUTBOUND_QUERY_URL;
-		if(!Config.isConfigured(obqm)){
-			return Utils.createMissingSettingErrorResponse(obqm.property(), resp);
-		}
-		
-		HttpResponse response = HttpUtil.post(Config.fullUrl(obqm)+"?session_id="+session_id+"&msg_id="+msgId, "", "");
-	//	System.out.println(response.body());
-		Utils.createTelenorResponse(response, resp);
+		resp.put("status", status);
 		
 		if(serviceLogId != null){//TODO change approach; what if dev forget to provide service log id
 			// TODO also handle if service log is not needed but outboud was created and needs to be updated
-			if(resp.containsKey("SUCCESS") && (boolean) resp.get("SUCCESS")){
-				int tries = updateServiceLog(serviceLogId, ServiceLogStatus.RESOLVED, true, null);
-				updateOutboundStatus(msgId, OutboundStatus.SENT, "", "", tries);
+			if(status.toLowerCase().contains("delivered") || status.toLowerCase().contains("accepted")){
+				markServiceLogResolved(serviceLogId, true);
+				updateOutboundStatus(msgId, OutboundStatus.SENT, "", "", null);
 			}
 			else {
-				int tries = updateServiceLog(serviceLogId, ServiceLogStatus.ERROR, false, (String) resp.get("ERROR_MESSAGE"));
-				updateOutboundStatus(msgId, OutboundStatus.WAITING, (String) resp.get("ERROR_MESSAGE"), (String) resp.get("ERROR_MESSAGE"), tries);
+				markServiceLogResolved(serviceLogId, false);
+				updateOutboundStatus(msgId, OutboundStatus.FAILED, "", "", null);
 			}
 		}
 		
 		return resp;
 	}
 	
-	private void updateOutboundStatus(Object messageId, OutboundStatus status, String errormessage, String failureCause, Integer tries){
+	private void updateOutboundStatus(String messageId, OutboundStatus status, String errormessage, String failureCause, Integer tries){
 		TarseelServices tsc = TarseelContext.getServices();
 		try{
-			OutboundMessage ob = tsc.getSmsService().findOutboundMessageByReferenceNumber(TelenorContext.createReferenceNumber(messageId), false);
+			OutboundMessage ob = tsc.getSmsService().findOutboundMessageByReferenceNumber(messageId, false);
 			if(ob != null){
-				if(!StringUtils.isEmptyOrWhitespaceOnly(failureCause) || !StringUtils.isEmptyOrWhitespaceOnly(failureCause)){
+				if(!StringUtils.isEmptyOrWhitespaceOnly(failureCause)){
 					ob.setErrormessage(ob.getErrorMessage()+";"+errormessage);
 					ob.setFailureCause(ob.getFailureCause()+";"+failureCause);					
 				}
@@ -294,44 +289,24 @@ public class TelenorOutboundResource {
 		}
 	}
 	
-	private int updateServiceLog(Integer serviceLogId, ServiceLogStatus serviceLogStatus, boolean giveupRetry, String failureCause) {
+	private int markServiceLogResolved(Integer serviceLogId, boolean smsSent) {
 		TarseelServices tsc = TarseelContext.getServices();
 		try{
 			// Assuming that serviceLogId would be correct.
-			//TODO update ob status
 			List<ServiceLog> sll = tsc.getCustomQueryService().getDataByHQL("FROM ServiceLog WHERE serviceLogId="+serviceLogId);
+			
 			ServiceLog sl = sll.get(0);
 			sl.setDateEdited(new Date());
 			sl.setEditedByUserId("daemon");
 			sl.setEditedByUsername("Daemon ServiceLog Manager");
-			sl.setStatus(serviceLogStatus);
+			sl.setStatus(ServiceLogStatus.RESOLVED);
 
-			if(!serviceLogStatus.equals(ServiceLogStatus.RESOLVED)){
-				if(giveupRetry == false){
-					sl.setDateDue(DateTime.now().plusHours(6).toDate());
-				}
-				else if(giveupRetry){
-					sl.setStatus(ServiceLogStatus.DISCARDED);
-				}
-			}
-			
-			if(!StringUtils.isEmptyOrWhitespaceOnly(failureCause)){
-				sl.setFailureCause(sl.getFailureCause()+";"+failureCause);				
-			}
-			
-			if(sl.getRetries() > 4){ // 6 hours gap with 4 tries would suffice to handle internet issues
-				sl.setFailureCause(sl.getFailureCause()+";MAX TRIES EXCEEDED;");
-				sl.setStatus(ServiceLogStatus.DISCARDED);
-			}
-			
-			sl.setRetries(sl.getRetries()+1);
-			
 			// TODO do we need to refer to Service object directly; can we add it to extras?
 			List<Service> s = tsc.getCustomQueryService().getDataByHQL("FROM Service WHERE authenticationKey='"+sl.getAuthKey()+"'");
 			if(s.size() > 0){//TODO could it be 0 ?
 				String successUrl = s.get(0).getOutboundSuccessReportUrl();
 				String failureUrl = s.get(0).getOutboundFailureReportUrl();
-				if(serviceLogStatus.equals(ServiceLogStatus.RESOLVED) && !StringUtils.isEmptyOrWhitespaceOnly(successUrl)){
+				if(smsSent && !StringUtils.isEmptyOrWhitespaceOnly(successUrl)){
 					successUrl = successUrl.replace("{{id}}", sl.getExtras().get(SmsServiceConstants.EXTERNAL_SYSTEM_MESSAGE_ID.name()));
 					HttpUtil.post(successUrl, "", "");//TODO
 				}

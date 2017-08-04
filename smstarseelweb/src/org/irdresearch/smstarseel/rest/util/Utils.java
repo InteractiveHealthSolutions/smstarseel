@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +30,7 @@ import org.json.XML;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mysql.jdbc.StringUtils;
+import com.sun.swing.internal.plaf.synth.resources.synth;
 
 public class Utils {
 	public static final String GLOBAL_DATE_FORMAT = "dd-MM-yyyy";
@@ -82,7 +84,7 @@ public class Utils {
 		return url;
 	}
 	
-	public static void createResponse(HttpResponse response, Map<String, Object> responseMap) {
+	public static void createTelenorResponse(HttpResponse response, Map<String, Object> responseMap) {
 		try {
 			Map<String, Object> mapResp = new Gson().fromJson(XML.toJSONObject(response.body()).getJSONObject("corpsms").toString(), new TypeToken<HashMap<String, Object>>() {}.getType());
 		
@@ -92,6 +94,26 @@ public class Utils {
 			else {
 				responseMap.put("ERROR", true);
 				responseMap.put("ERROR_MESSAGE", mapResp.get("data"));
+			}
+			
+			responseMap.putAll(mapResp);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			throw new IllegalStateException(e);
+		}
+	}
+	
+	public static void createITSResponse(HttpResponse response, Map<String, Object> responseMap) {
+		try {
+			Map<String, Object> mapResp = new Gson().fromJson(XML.toJSONObject(response.body())
+					.getJSONObject("response").getJSONObject("data").getJSONObject("acceptreport").toString(), new TypeToken<HashMap<String, Object>>() {}.getType());
+		
+			if(new Double(mapResp.get("statuscode").toString()).intValue() == 0){
+				responseMap.put("SUCCESS", true);
+			}
+			else {
+				responseMap.put("ERROR", true);
+				responseMap.put("ERROR_MESSAGE", mapResp.get("statusmessage"));
 			}
 			
 			responseMap.putAll(mapResp);
@@ -118,9 +140,9 @@ public class Utils {
 		return sl;
 	}
 	
-	public static OutboundMessage createOutbound(Date duedate, String imei, String from, String to, String text, Date sentdate,
+	public static synchronized OutboundMessage createOutbound(Date duedate, String imei, String from, String to, String text, Date sentdate,
 			int validityInDays, int projectId, Date processingStartDate, OutboundStatus status, 
-			Object messageId, Map<String, String> extras) {
+			String referenceNumber, Map<String, String> extras) {
 		OutboundMessage om = new OutboundMessage();
 		om.setCreatedDate(new Date());
 		om.setDueDate(duedate);
@@ -137,7 +159,7 @@ public class Utils {
 		om.setValidityPeriod(validityInDays);
 		om.setPriority(Priority.HIGH);
 		om.setProjectId(projectId);
-		om.setReferenceNumber(TelenorContext.createReferenceNumber(messageId));
+		om.setReferenceNumber(referenceNumber);
 		//om.setSystemProcessingEndDate(systemProcessingEndDate);
 		om.setSystemProcessingStartDate(processingStartDate);
 		//om.setDescription(description);

@@ -72,6 +72,7 @@ $(function(){
 				}
 		    },
 		    {field:'serviceId',title:'', hidden:true}, 
+		    {field:'serviceIdentifier',title:'Code/ID'}, 
 		    {field:'serviceName',title:'Name/ID'}, 
 		    {field:'status',title:'Status',width:70}, 
 		    {field:'authenticationKey',title:'API Key'}, 

@@ -1,20 +1,36 @@
 
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Calendar;
+import java.util.Properties;
 
 import javax.management.InstanceAlreadyExistsException;
 
+import org.irdresearch.smstarseel.SmsTarseelUtil;
 import org.irdresearch.smstarseel.context.TarseelContext;
 import org.irdresearch.smstarseel.context.TarseelServices;
 import org.irdresearch.smstarseel.data.OutboundMessage.PeriodType;
 import org.irdresearch.smstarseel.data.OutboundMessage.Priority;
 
+import net.jmatrix.eproperties.EProperties;
+
 public class addDataTester {
 
-	public static void main(String[] args) throws InstanceAlreadyExistsException
+	public static void main(String[] args) throws IOException, InstanceAlreadyExistsException
 	{
-		TarseelContext.instantiate(null, "smstarseel.cfg.xml");
+		System.out.println(">>>>LOADING SYSTEM PROPERTIES...");
+		InputStream f = Thread.currentThread().getContextClassLoader().getResourceAsStream("smstarseel.properties");
+		// Java Properties donot seem to support substitutions hence EProperties are used to accomplish the task
+		EProperties root = new EProperties();
+		root.load(f);
+
+		// Java Properties to send to context and other APIs for configuration
+		Properties prop = new Properties();
+		prop.putAll(SmsTarseelUtil.convertEntrySetToMap(root.entrySet()));
+		
+		TarseelContext.instantiate(prop, null);
 		TarseelServices sc = TarseelContext.getServices();
 		
 		Calendar c = Calendar.getInstance();

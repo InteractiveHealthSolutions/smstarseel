@@ -13,6 +13,10 @@ import com.mysql.jdbc.StringUtils;
 
 public class ServiceValidator implements Validator{
 
+	public static void main(String[] args) throws MalformedURLException {
+		System.out.println(new URL("http://localhost:8181/unfepi/ws/api/reminder/failed?id={{id}}"));
+	}
+	
 	@Override
 	public boolean supports(Class<?> cls) {
 		return cls.equals(Service.class);
@@ -33,29 +37,29 @@ public class ServiceValidator implements Validator{
 		}
 		if(!StringUtils.isEmptyOrWhitespaceOnly(s.getDeliveryReportUrl())){
 			try{
-				URI.create(s.getDeliveryReportUrl());
-			}catch(IllegalArgumentException e){
+				new URI(s.getDeliveryReportUrl());
+			}catch(IllegalArgumentException | URISyntaxException e){
 				errors.rejectValue("deliveryReportUrl", null, "invalid url pattern");				
 			}
 		}
 		if(!StringUtils.isEmptyOrWhitespaceOnly(s.getInboundReportUrl())){
 			try{
-				URI.create(s.getInboundReportUrl());
-			}catch(IllegalArgumentException e){
+				new URL(s.getInboundReportUrl());
+			}catch(IllegalArgumentException | MalformedURLException e){
 				errors.rejectValue("inboundReportUrl", null, "invalid url pattern");				
 			}
 		}
 		if(!StringUtils.isEmptyOrWhitespaceOnly(s.getOutboundFailureReportUrl())){
 			try{
-				URI.create(s.getOutboundFailureReportUrl());
-			}catch(IllegalArgumentException e){
+				new URL(s.getOutboundFailureReportUrl());
+			}catch(IllegalArgumentException | MalformedURLException e){
 				errors.rejectValue("outboundFailureReportUrl", null, "invalid url pattern");				
 			}
 		}
 		if(!StringUtils.isEmptyOrWhitespaceOnly(s.getOutboundSuccessReportUrl())){
 			try{
-				URI.create(s.getOutboundSuccessReportUrl());
-			}catch(IllegalArgumentException e){
+				new URL(s.getOutboundSuccessReportUrl());
+			}catch(IllegalArgumentException | MalformedURLException e){
 				errors.rejectValue("outboundSuccessReportUrl", null, "invalid url pattern");				
 			}
 		}

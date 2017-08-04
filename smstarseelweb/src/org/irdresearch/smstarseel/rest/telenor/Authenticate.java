@@ -9,6 +9,7 @@ import org.irdresearch.smstarseel.rest.telenor.TelenorContext.Config;
 import org.irdresearch.smstarseel.rest.util.HttpResponse;
 import org.irdresearch.smstarseel.rest.util.HttpUtil;
 import org.irdresearch.smstarseel.rest.util.Utils;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,6 +21,8 @@ import com.mysql.jdbc.StringUtils;
 @Controller
 @RequestMapping("/rest/telenor/authenticate")
 public class Authenticate {
+	DateTime lastPingToServer = DateTime.now().minusHours(1);
+	String lastSessionId;
 
 	private TelenorAuthenticator authenticator;
 
@@ -60,7 +63,7 @@ public class Authenticate {
 					String pingerUrl = TelenorContext.getProperty(Config.PING_URL, null);
 					HttpResponse response = HttpUtil.post(pingerUrl  , "session_id="+authenticationKey, "");
 					System.out.println(response.body());
-					Utils.createResponse(response, resp);
+					Utils.createTelenorResponse(response, resp);
 					
 					if(resp.containsKey("SUCCESS") && (boolean) resp.get("SUCCESS")){
 						// TODO do nothing for now may be logging would be great
@@ -131,7 +134,7 @@ public class Authenticate {
 		return authenticate(username, password, keepalive).get("SUCCESS").toString().toLowerCase().contains("true");
 	}
 	
-	public String getAuthenticatedSessionId() {
+	public synchronized String getAuthenticatedSessionId() {
 		String username = TelenorContext.getProperty(Config.MSISDN, null);
 		String password = TelenorContext.getProperty(Config.PASSWORD, null);
 		if(StringUtils.isEmptyOrWhitespaceOnly(username) || StringUtils.isEmptyOrWhitespaceOnly(password)){
@@ -140,9 +143,15 @@ public class Authenticate {
 					+ "telenor.username and telenor.password");
 		}
 		
+		if(lastSessionId != null && lastPingToServer.isAfter(DateTime.now().minusMinutes(12))){
+			return lastSessionId;
+		}
+		
 		Map<String, Object> resp = authenticate(username, password, false);
 		if(resp.containsKey("SUCCESS") && (boolean) resp.get("SUCCESS")){
-			return resp.get("data").toString();
+			lastPingToServer = DateTime.now();
+			lastSessionId = resp.get("data").toString();
+			return lastSessionId;
 		}
 		
 		return null;
@@ -151,6 +160,6 @@ public class Authenticate {
 	private void login(String msisdn, String password, Map<String, Object> resp) {
 		HttpResponse response = HttpUtil.post(Config.fullUrl(Config.AUTH_URL) , "msisdn="+msisdn+"&password="+password, "");
 		//System.out.println(response.body());
-		Utils.createResponse(response, resp);
+		Utils.createTelenorResponse(response, resp);
 	}
 }

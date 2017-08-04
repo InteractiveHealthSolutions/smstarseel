@@ -9,6 +9,7 @@ public class TarseelWebGlobals {
 	public enum SmsServiceConstants{
 		API_KEY,
 		TELENOR_MESSAGE_ID,
+		ITS_MESSAGE_ID,
 		EXTERNAL_SYSTEM_MESSAGE_ID,
 		EXTERNAL_SYSTEM_ID,
 		EXTERNAL_SYSTEM_CONTACT_ID,
