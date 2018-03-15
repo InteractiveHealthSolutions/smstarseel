@@ -20,7 +20,7 @@ import com.mysql.jdbc.StringUtils;
 public class ITSContext {
 	public static final SimpleDateFormat DATETIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
-	private static Timer timer = instantiateTimer();
+	private static Timer timer;
 	
 	public enum ITSConfig {
 		BASE_URL("its.api.base-url"),
@@ -99,6 +99,8 @@ public class ITSContext {
 				if(StringUtils.isEmptyOrWhitespaceOnly(getProperty(ITSConfig.PASSWORD, null))){
 					throw new RuntimeException("No property configured as "+ITSConfig.PASSWORD.property);
 				}
+				
+				instantiateTimer();
 				
 				lg.info("......ITS PROPERTIES LOADED SUCCESSFULLY......");
 			}
