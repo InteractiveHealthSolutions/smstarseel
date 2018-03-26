@@ -1,6 +1,7 @@
 package org.irdresearch.smstarseel.rest.telenor;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URLDecoder;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,6 +15,9 @@ import org.irdresearch.smstarseel.context.TarseelContext;
 import org.irdresearch.smstarseel.context.TarseelServices;
 import org.irdresearch.smstarseel.data.OutboundMessage;
 import org.irdresearch.smstarseel.data.OutboundMessage.OutboundStatus;
+import org.irdresearch.smstarseel.data.OutboundMessage.OutboundType;
+import org.irdresearch.smstarseel.data.OutboundMessage.PeriodType;
+import org.irdresearch.smstarseel.data.OutboundMessage.Priority;
 import org.irdresearch.smstarseel.data.Project;
 import org.irdresearch.smstarseel.data.Service;
 import org.irdresearch.smstarseel.data.ServiceLog;
@@ -137,7 +141,7 @@ public class TelenorOutboundResource {
 			System.out.println(response.body());
 			Utils.createTelenorResponse(response, resp);
 			
-			if(resp.containsKey("SUCCESS") && (boolean) resp.get("SUCCESS")){
+			if((resp.containsKey("SUCCESS") && (boolean) resp.get("SUCCESS"))){
 				Long messageId = new Double(resp.get("data").toString()).longValue();
 				
 				Map<String, String> extras = new HashMap<>();
@@ -153,18 +157,46 @@ public class TelenorOutboundResource {
 				if(StringUtils.isEmptyOrWhitespaceOnly(id)){
 					id = s.getServiceName();
 				}
-				
 				String referenceNumber = TelenorContext.createReferenceNumber(messageId);
 				OutboundMessage om = Utils.createOutbound(new Date(), id, mask, recipient, text, new Date(), 1,	projectId, 
 						systemProcessingStartDate, OutboundStatus.WAITING, referenceNumber , extras);
 				
-				tsc.getCustomQueryService().save(om);
-				
-				resp.put("referenceNumber", om.getReferenceNumber());
-
+				Integer outboundId = null;
+				OutboundMessage obmsg = null;
+				List<BigInteger> outboundIdL = tsc.getCustomQueryService().getDataBySQL("select outbound_extras_id from outbound_extras where attributeKey = 'EXTERNAL_SYSTEM_MESSAGE_ID' "
+						+ "and attributeValue = "+ externalSystemMessageId);
+				if(outboundIdL != null && outboundIdL.size() >0){
+					outboundId = outboundIdL.get(0).intValue();
+				}
+				if(outboundId != null){
+					obmsg = tsc.getSmsService().findOutboundById(outboundId);
+				}
+				if(obmsg == null){
+					tsc.getCustomQueryService().save(om);
+					resp.put("referenceNumber", om.getReferenceNumber());
+				} else {
+					obmsg.setImei(id);
+					obmsg.setOriginator(from);
+					obmsg.setRecipient(to);
+					obmsg.setText(text);
+//					obmsg.setTries(obmsg.getTries() +1);
+					obmsg.setSentdate(new Date());
+					obmsg.setStatus(OutboundStatus.WAITING);
+					obmsg.setPeriodType(PeriodType.DAY);
+					obmsg.setValidityPeriod(1);
+					obmsg.setPriority(Priority.HIGH);
+					obmsg.setProjectId(projectId);
+					obmsg.setReferenceNumber(referenceNumber);
+					obmsg.setSystemProcessingStartDate(systemProcessingStartDate);
+					obmsg.setType(OutboundType.SMS);
+					obmsg.setExtras(extras);
+					obmsg.setReferenceNumber(referenceNumber);
+					
+					tsc.getCustomQueryService().update(obmsg);
+					resp.put("referenceNumber", obmsg.getReferenceNumber());
+				}
 				String queryUrl = requestPath + "/query?"+SmsServiceConstants.TELENOR_MESSAGE_ID.name()+"="+messageId;
 				ServiceLog sl = Utils.createServiceLog(2, true, projectId, queryUrl, "POST", s.getAuthenticationKey(), extras);
-				
 				tsc.getCustomQueryService().save(sl);
 			}
 			else {
@@ -176,6 +208,44 @@ public class TelenorOutboundResource {
 					String postUrl = requestPath + "/send?"+URLDecoder.decode(request.getQueryString(), "UTF-8");//here to would be whole string again
 					ServiceLog sl = Utils.createServiceLog(60*4, true, projectId, postUrl, "POST", s.getAuthenticationKey(), null);
 					tsc.getCustomQueryService().save(sl);
+				} else {
+					Long messageId; 
+					BigInteger errorNo = (BigInteger)tsc.getCustomQueryService().getDataBySQL(
+							"SELECT max(CONVERT(replace(referenceNumber, 'Telenor:Error',''),UNSIGNED INTEGER)) rn FROM outboundmessage WHERE referenceNumber LIKE 'Telenor:Error%';").get(0);
+					if(errorNo != null){
+						messageId = errorNo.longValue() + 1;
+					} else {
+						messageId = 1L;
+					}
+					Map<String, String> extras = new HashMap<>();
+					extras.put(SmsServiceConstants.EXTERNAL_SYSTEM_MESSAGE_ID.name(), externalSystemMessageId);
+					extras.put(SmsServiceConstants.EXTERNAL_SYSTEM_ID.name(), from);
+					if(contactId != null){
+					extras.put(SmsServiceConstants.EXTERNAL_SYSTEM_CONTACT_ID.name(), contactId);
+					extras.put(SmsServiceConstants.TELENOR_MESSAGE_ID.name(), "Error" + messageId.toString());
+					}
+					
+					String id = s.getServiceIdentifier();
+					if(StringUtils.isEmptyOrWhitespaceOnly(id)){
+						id = s.getServiceName();
+					}
+					
+					Integer outboundId = null;
+					OutboundMessage obmsg = null;
+					List<BigInteger> outboundIdL = tsc.getCustomQueryService().getDataBySQL("select outbound_extras_id from outbound_extras where attributeKey = 'EXTERNAL_SYSTEM_MESSAGE_ID' "
+							+ "and attributeValue = "+ externalSystemMessageId);
+					if(outboundIdL != null && outboundIdL.size() >0){
+						outboundId = outboundIdL.get(0).intValue();
+					}
+					if(outboundId != null){
+						obmsg = tsc.getSmsService().findOutboundById(outboundId);
+					}
+					if(obmsg == null){
+						String referenceNumber =  "Telenor:Error"+messageId.toString();
+						OutboundMessage om = Utils.createOutbound(new Date(), id, mask, recipient, text, new Date(), 1,	projectId, 
+								systemProcessingStartDate, OutboundStatus.FAILED, referenceNumber , extras);
+						tsc.getCustomQueryService().save(om);
+					}
 				}
 			}
 			tsc.commitTransaction();
@@ -206,7 +276,7 @@ public class TelenorOutboundResource {
 		
 		return resp;
 	}
-	
+//	
 	private String outboundPayload(String session_id, String recipient, String text, String mask, Boolean unicode) {
 		String payload = "session_id="+session_id;
 		payload += "&to="+recipient;
