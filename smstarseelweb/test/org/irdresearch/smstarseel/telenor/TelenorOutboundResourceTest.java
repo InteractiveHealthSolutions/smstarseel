@@ -47,7 +47,7 @@ public class TelenorOutboundResourceTest {
 	
 	@Before
 	public void setup() {
-		tor = new TelenorOutboundResource();
+//		tor = new TelenorOutboundResource();
 		
 		handlerAdapter = new AnnotationMethodHandlerAdapter();
 		HttpMessageConverter[] messageConverters = { new MappingJacksonHttpMessageConverter() };
@@ -141,7 +141,7 @@ public class TelenorOutboundResourceTest {
 		MockHttpServletResponse mockResponse = new MockHttpServletResponse();
 		
 		//No authentication
-		tor.auth = null;
+//		tor.auth = null;
 		
 		MockHttpServletRequest mockRequest = createRequest(BASE_URL+"/send", RequestMethod.GET);
 		mockRequest.addParameter("to", "923453232323");
@@ -158,7 +158,7 @@ public class TelenorOutboundResourceTest {
 				containsString("authent"), containsString("unhandled"), containsString("error")));
 		
 		//No authentication
-		tor.auth = new Authenticate();
+//		tor.auth = new Authenticate();
 		
 		mockResponse = new MockHttpServletResponse();
 		mockRequest = createRequest(BASE_URL+"/send", RequestMethod.GET);
@@ -181,13 +181,13 @@ public class TelenorOutboundResourceTest {
 		MockHttpServletResponse mockResponse = new MockHttpServletResponse();
 		
 		//No authentication
-		tor.outboundSendUrl = "https://telenorcsms.com.pk:27677/corporate_sms2/api/sendsms.jsp";
-		tor.auth = new Authenticate();
-		tor.auth.authenticatorUrl = "https://telenorcsms.com.pk:27677/corporate_sms2/api/auth.jsp";
-		tor.auth.pingerUrl = "https://telenorcsms.com.pk:27677/corporate_sms2/api/ping.jsp";
-		tor.auth.username = "923458299433";
-		tor.auth.password = "LTZCOS";
-		
+//		tor.outboundSendUrl = "https://telenorcsms.com.pk:27677/corporate_sms2/api/sendsms.jsp";
+//		tor.auth = new Authenticate();
+//		tor.auth.authenticatorUrl = "https://telenorcsms.com.pk:27677/corporate_sms2/api/auth.jsp";
+//		tor.auth.pingerUrl = "https://telenorcsms.com.pk:27677/corporate_sms2/api/ping.jsp";
+//		tor.auth.username = "923458299433";
+//		tor.auth.password = "LTZCOS";
+//		
 		
 		MockHttpServletRequest mockRequest = createRequest(BASE_URL+"/send", RequestMethod.GET);
 		mockRequest.addParameter("to", "923343872951");

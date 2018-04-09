@@ -36,7 +36,7 @@ public class AuthenticatorTest {
 	
 	@Test
 	public void shouldThrowExceptionIfTelenorUrlIsNotConfigured() throws JSONException {
-		as.authenticatorUrl = "";
+//		as.authenticatorUrl = "";
 		Map<String, Object> r = as.authenticate("tst", "pw", null);
 		Assert.assertTrue((boolean) r.get("ERROR"));
 		Assert.assertTrue(r.get("ERROR_MESSAGE").toString().toLowerCase().contains("telenor.url.authenticator"));
@@ -44,7 +44,7 @@ public class AuthenticatorTest {
 	
 	@Test
 	public void shouldPassIfEverythingIsWorking() throws JSONException {
-		as.authenticatorUrl = "https://telenorcsms.com.pk:27677/corporate_sms2/api/auth.jsp";
+//		as.authenticatorUrl = "https://telenorcsms.com.pk:27677/corporate_sms2/api/auth.jsp";
 		String msisdn = "923458299433";
 		String password = "LTZCOS";
 		Map<String, Object> r = as.authenticate(msisdn, password, null);
@@ -55,7 +55,7 @@ public class AuthenticatorTest {
 	
 	@Test
 	public void shouldFailIfAuthenticationCredentailsAreIncorrect() throws JSONException {
-		as.authenticatorUrl = "https://telenorcsms.com.pk:27677/corporate_sms2/api/auth.jsp";
+//		as.authenticatorUrl = "https://telenorcsms.com.pk:27677/corporate_sms2/api/auth.jsp";
 		String msisdn = "923458299433";
 		String password = "LTECOS";
 		Map<String, Object> r = as.authenticate(msisdn, password, null);
