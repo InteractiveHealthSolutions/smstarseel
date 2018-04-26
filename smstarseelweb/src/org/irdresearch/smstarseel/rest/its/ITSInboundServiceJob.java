@@ -85,62 +85,63 @@ public class ITSInboundServiceJob extends TimerTask{
 			HttpResponse response = HttpUtil.post(ibdqu, payload, "");
 			
 			System.out.println(response.body());
-			
-			JSONArray smses = new JSONObject(response.body()).getJSONArray("data");
-			
-			for (int i = 0; i < smses.length(); i++) 
-			{
-				JSONObject sms = smses.getJSONObject(i);
-				String smsId = sms.getString("id");
-				
-				tsc = TarseelContext.getServices();
-				try{
-					String receiver = sms.getString("receiver");
-					
-					List<Service> listners = getServiceForCode(receiver, serviceL);
-					
-					if(listners.size() == 0){
-						saveInbound(smsId, receiver, null, sms, tsc);
-					}
-					else{
-						for (Service service : listners) {
-							Integer projectId = service.getProject()==null?null:service.getProject().getProjectId();
-							
-							InboundMessage ib = saveInbound(smsId, receiver, projectId, sms, tsc);
-							try{
-								String url = service.getInboundReportUrl();
-								if(!StringUtils.isEmptyOrWhitespaceOnly(url)){
-									url = url.replace("{{recipient}}", ib.getRecipient());
-									url = url.replace("{{originator}}", ib.getOriginator());
-									url = url.replace("{{text}}", ib.getText());
-									url = url.replace("{{datetime}}", ITSContext.DATETIME_FORMAT.format(ib.getRecieveDate()));
-									url = url.replace("{{reference}}", ib.getReferenceNumber());
-									
-									HttpResponse resp = HttpUtil.post(service.getInboundReportUrl(), "", null);
-									
-									if(resp.statusCode() >= 200 && resp.statusCode() < 300){
-										ib.setStatus(InboundStatus.READ);
-										tsc.getSmsService().updateInbound(ib);
+
+			JSONArray smses = new JSONObject(response.body()).optJSONArray("data");
+			if(smses != null){
+				for (int i = 0; i < smses.length(); i++) 
+				{
+					JSONObject sms = smses.getJSONObject(i);
+					String smsId = sms.getString("id");
+
+					tsc = TarseelContext.getServices();
+					try{
+						String receiver = sms.getString("receiver");
+
+						List<Service> listners = getServiceForCode(receiver, serviceL);
+
+						if(listners.size() == 0){
+							saveInbound(smsId, receiver, null, sms, tsc);
+						}
+						else{
+							for (Service service : listners) {
+								Integer projectId = service.getProject()==null?null:service.getProject().getProjectId();
+
+								InboundMessage ib = saveInbound(smsId, receiver, projectId, sms, tsc);
+								try{
+									String url = service.getInboundReportUrl();
+									if(!StringUtils.isEmptyOrWhitespaceOnly(url)){
+										url = url.replace("{{recipient}}", ib.getRecipient());
+										url = url.replace("{{originator}}", ib.getOriginator());
+										url = url.replace("{{text}}", ib.getText());
+										url = url.replace("{{datetime}}", ITSContext.DATETIME_FORMAT.format(ib.getRecieveDate()));
+										url = url.replace("{{reference}}", ib.getReferenceNumber());
+
+										HttpResponse resp = HttpUtil.post(service.getInboundReportUrl(), "", null);
+
+										if(resp.statusCode() >= 200 && resp.statusCode() < 300){
+											ib.setStatus(InboundStatus.READ);
+											tsc.getSmsService().updateInbound(ib);
+										}
 									}
 								}
-							}
-							catch (Exception e) {
-								e.printStackTrace();
+								catch (Exception e) {
+									e.printStackTrace();
+								}
 							}
 						}
+
+						tsc.commitTransaction();
 					}
-					
-					tsc.commitTransaction();
+					catch (Exception e) {
+						e.printStackTrace();
+						EmailEngine.getInstance().emailErrorReportToAdmin("SmsTarseel: Error Handling SMS "+smsId+" in "+this.getClass().getName()+" "+e.getMessage(), "SmsTarseel: Error handling Inbound SMS: "+smsId+"-"+e.getMessage());
+					}
+					finally{
+						tsc.closeSession();
+					}
+
+					TarseelContext.updateSetting(ITS_INBOUND_SETTING, smsId, new User(99, "Daemon"));
 				}
-				catch (Exception e) {
-					e.printStackTrace();
-					EmailEngine.getInstance().emailErrorReportToAdmin("SmsTarseel: Error Handling SMS "+smsId+" in "+this.getClass().getName()+" "+e.getMessage(), "SmsTarseel: Error handling Inbound SMS: "+smsId+"-"+e.getMessage());
-				}
-				finally{
-					tsc.closeSession();
-				}
-				
-				TarseelContext.updateSetting(ITS_INBOUND_SETTING, smsId, new User(99, "Daemon"));
 			}
 		} 
 		catch (Exception e) {
