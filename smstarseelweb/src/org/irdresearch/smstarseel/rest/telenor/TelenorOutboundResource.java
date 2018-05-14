@@ -89,6 +89,7 @@ public class TelenorOutboundResource {
 		Boolean unicode = Utils.getBooleanFilter("unicode", request);
 		String pp = Utils.getStringFilter("project", request);
 		String externalSystemMessageId = Utils.getStringFilter("id", request);
+		String operatorId = Utils.getStringFilter("operatorId", request);
 		
 		TarseelServices tsc = TarseelContext.getServices();
 		Integer projectId = null;
@@ -137,7 +138,7 @@ public class TelenorOutboundResource {
 			}
 			
 			HttpResponse response = HttpUtil.post(Config.fullUrl(obdu) , 
-					outboundPayload(session_id, recipient, text, mask, unicode), "");
+					outboundPayload(session_id, recipient, text, mask, unicode, operatorId), "");
 			System.out.println(response.body());
 			Utils.createTelenorResponse(response, resp);
 			
@@ -277,13 +278,16 @@ public class TelenorOutboundResource {
 		return resp;
 	}
 //	
-	private String outboundPayload(String session_id, String recipient, String text, String mask, Boolean unicode) {
+	private String outboundPayload(String session_id, String recipient, String text, String mask, Boolean unicode, String operator_id) {
 		String payload = "session_id="+session_id;
 		payload += "&to="+recipient;
 		payload += "&text="+text;
 		payload += "&mask="+mask;
 		if(unicode != null){
 			payload += "&unicode="+unicode;
+		}
+		if(operator_id != null && operator_id.length() > 0){
+			payload += "&operator_id="+operator_id;
 		}
 		
 		return payload;
