@@ -30,7 +30,6 @@ import org.json.XML;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.mysql.jdbc.StringUtils;
-import com.sun.swing.internal.plaf.synth.resources.synth;
 
 public class Utils {
 	public static final String GLOBAL_DATE_FORMAT = "dd-MM-yyyy";

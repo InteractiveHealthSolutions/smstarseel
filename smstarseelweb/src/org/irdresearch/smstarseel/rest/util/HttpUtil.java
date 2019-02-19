@@ -83,7 +83,8 @@ public class HttpUtil {
             return new HttpResponse(response.getStatusLine().getStatusCode() == HttpStatus.SC_OK, response.getStatusLine()
             		.getStatusCode(),IOUtils.toString(response.getEntity().getContent()));
         } catch (Exception e) {
-        	e.printStackTrace();
+//        	e.printStackTrace();
+        	System.out.println("Exception occured inside org.irdresearch.smstarseel.rest.util.HttpUtil.post");
             throw new RuntimeException(e);
         }
     }

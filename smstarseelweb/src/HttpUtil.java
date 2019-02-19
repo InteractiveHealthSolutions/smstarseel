@@ -13,7 +13,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import sun.misc.BASE64Encoder;
+import Decoder.BASE64Encoder;
 
 import com.mysql.jdbc.StringUtils;
 

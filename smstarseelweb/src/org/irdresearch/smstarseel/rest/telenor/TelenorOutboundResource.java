@@ -139,7 +139,7 @@ public class TelenorOutboundResource {
 			
 			HttpResponse response = HttpUtil.post(Config.fullUrl(obdu) , 
 					outboundPayload(session_id, recipient, text, mask, unicode, operatorId), "");
-			System.out.println(response.body());
+//			System.out.println(response.body());
 			Utils.createTelenorResponse(response, resp);
 			
 			if((resp.containsKey("SUCCESS") && (boolean) resp.get("SUCCESS"))){
@@ -421,7 +421,8 @@ public class TelenorOutboundResource {
 			return sl.getRetries();
 		}
 		catch (Exception e) {
-			e.printStackTrace();//TODO what to do with exception
+//			e.printStackTrace() ;//TODO what to do with exception
+			System.out.println("Exception occured inside org.irdresearch.smstarseel.rest.telenor.TelenorOutboundResource.updateServiceLog");
 		}
 		finally{
 			tsc.closeSession();

@@ -14,11 +14,9 @@ import org.irdresearch.smstarseel.context.TarseelServices;
 import org.irdresearch.smstarseel.data.Service;
 import org.irdresearch.smstarseel.data.Service.ServiceStatus;
 import org.irdresearch.smstarseel.rest.util.Utils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import sun.misc.BASE64Decoder;
+import Decoder.BASE64Decoder;
 
 import com.mysql.jdbc.StringUtils;
 

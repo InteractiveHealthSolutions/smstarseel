@@ -1,0 +1,16 @@
+/c3p0-config.xml
+/its.properties
+/log4j.properties
+/logback.xml
+/org/
+/FileUploadTest.class
+/HttpResponse.class
+/HttpSender.class
+/HttpUtil.class
+/TestClass$TESTENUM.class
+/TestClass.class
+/addDataTester.class
+/buffertest.class
+/dataAdder.class
+/fileUploadDownload.class
+/jsontest.class

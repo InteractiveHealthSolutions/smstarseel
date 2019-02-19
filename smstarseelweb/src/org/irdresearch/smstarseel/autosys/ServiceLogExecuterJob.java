@@ -19,7 +19,7 @@ public class ServiceLogExecuterJob implements Runnable{
 		TarseelServices tsc = TarseelContext.getServices();
 		try{
 			List<ServiceLog> sll = tsc.getCustomQueryService().getDataByHQL("FROM ServiceLog WHERE status IN ('"+ServiceLogStatus.ERROR+"','"+ServiceLogStatus.PENDING+"')");
-			System.out.println("EXECUTING SERVICE LOGS LIST WITH SIZE "+sll.size());
+			System.out.println("SMS TARSEEL EXECUTING SERVICE LOGS LIST WITH SIZE "+sll.size());
 			for (ServiceLog sl : sll) {
 				String method = StringUtils.isEmptyOrWhitespaceOnly(sl.getServiceMethod()) || sl.getServiceMethod().equalsIgnoreCase("post")?"POST":"GET";
 				String authType = sl.getExtras().get("authentication")==null?"none":sl.getExtras().get("authentication");
