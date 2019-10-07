@@ -12,13 +12,23 @@ id="WebApp_ID" version="2.5">
   
   <filter> 
     <filter-name>filterHeader</filter-name> 
-    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class> 
+    <filter-class>org.irdresearch.smstarseel.web.controller.SmstarseelRequestFilter</filter-class> 
   </filter>
   <filter-mapping> 
     <filter-name>filterHeader</filter-name> 
       <url-pattern>*.htm</url-pattern>
       <url-pattern>*.do</url-pattern>
       <url-pattern>*.dm</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+
+    <filter> 
+    <filter-name>restAuthentication</filter-name> 
+    <filter-class>org.irdresearch.smstarseel.rest.RestAuthentication</filter-class> 
+  </filter>
+  <filter-mapping> 
+    <filter-name>restAuthentication</filter-name> 
+      <url-pattern>/rest/*</url-pattern>
     <dispatcher>REQUEST</dispatcher>
   </filter-mapping>
   
@@ -37,13 +47,14 @@ id="WebApp_ID" version="2.5">
   </servlet>
   <servlet-mapping>
       <servlet-name>smstarseelweb</servlet-name>
-      <url-pattern>*.htm</url-pattern>
+      <!-- <url-pattern>*.htm</url-pattern>
       <url-pattern>*.do</url-pattern>
       <url-pattern>*.dm</url-pattern>
       <url-pattern>*.tst</url-pattern>
-     <!--  <url-pattern>/</url-pattern> -->
+      <url-pattern>/rest/*</url-pattern> -->
+      <url-pattern>/</url-pattern>
   </servlet-mapping>
-  
+
   <servlet>
     <servlet-name>smstarseelServlet</servlet-name>
     <servlet-class>org.irdresearch.smstarseel.SmsTarseel</servlet-class>

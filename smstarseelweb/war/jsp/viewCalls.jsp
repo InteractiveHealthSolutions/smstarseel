@@ -30,7 +30,7 @@ document.getElementById("callStatus").selectedIndex=0;
 <br>
 Call Date From : <input id="dtbCallFrom" class="easyui-datebox" style="width:100px"/>  
         To: <input id="dtbCallTo" class="easyui-datebox" style="width:100px"/> 
-        <a class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="loadthedata();">Query</a>
+        <a class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="loadthedata();">Search</a>
 </div>
 
 <div style="float: right;">
@@ -78,7 +78,6 @@ $('input[id^="txt"]').on( 'blur', function() {
 // INIT REFERENCE NUMBER SEARCHBOX
 $('#sbReferenceNumber').searchbox({ 
     searcher:function(value, name){  
-		queryParams['<%=CommunicationQueryParams.REFERENCE_NUMBER%>'] = value;
 		loadthedata();
     },  
     prompt:'Enter reference number'
@@ -132,6 +131,7 @@ $(function(){
 function loadthedata(){
 	/* var dgChoosenData = new Object();
 	dgChoosenData['rows']=[]; */
+	queryParams['<%=CommunicationQueryParams.REFERENCE_NUMBER%>'] = $('#sbReferenceNumber').searchbox('getValue');
 	queryParams['<%=CallQueryParams.CALLDATE_FROM%>'] = $('#dtbCallFrom').datebox('getValue');
 	queryParams['<%=CallQueryParams.CALLDATE_TO%>'] = $('#dtbCallTo').datebox('getValue');
 	queryParams['<%=CommunicationQueryParams.IMEI%>'] = document.getElementById("txtImei").value;

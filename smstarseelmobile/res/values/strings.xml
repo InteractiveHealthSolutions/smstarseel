@@ -49,4 +49,5 @@
 	<string name="runtimeText">AtRuntime</string>
 	<string name="select_project">Select Project</string>
 	<string name="copy_rights">Copyright © Interative Health Solutions</string>
+	<string name="non_default_app_text">The application is not default sms app. Smstarseel MUST be default app to work correctly. Change the default app and try again.</string>
 </resources>

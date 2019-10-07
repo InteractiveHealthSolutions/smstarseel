@@ -30,7 +30,7 @@ document.getElementById("smsStatus").selectedIndex=0;
 <br>
 Received From : <input id="dtbReceiveFrom" class="easyui-datebox" style="width:100px"/>  
         To: <input id="dtbReceiveTo" class="easyui-datebox" style="width:100px"/> 
-        <a class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="loadthedata(0);">Query</a>
+        <a class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="loadthedata(0);">Search</a>
 </div>
 
 <div style="float: right;">
@@ -78,7 +78,6 @@ $('input[id^="txt"]').on( 'blur', function() {
 // INIT REFERENCE NUMBER SEARCHBOX
 $('#sbReferenceNumber').searchbox({ 
     searcher:function(value, name){  
-		queryParams['<%=CommunicationQueryParams.REFERENCE_NUMBER%>'] = value;
 		loadthedata(0);
     },  
     prompt:'Enter reference number'
@@ -92,19 +91,19 @@ $(function(){
 		iconCls:'icon-reminder',
 		width:750,
 		height:550,
-		nowrap: true,
+		nowrap: false,
 		autoRowHeight: false,
 		loader: loadthedata,
 		selectOnCheck: false,
 		singleSelect: true,
 		idField:'referenceNumber',
 		frozenColumns:[[
-               {title:'Reference Number',field:'referenceNumber',width:130,sortable:true}
+               {title:'Reference Number',field:'referenceNumber',width:140,sortable:true}
 		]],
 		columns:[[  
-		    {field:'originator',title:'Originator',width:100}, 
+		    {field:'originator',title:'Originator',width:108}, 
 		    {field:'status',title:'Status',width:80}, 
-		    {field:'systemRecieveDate',title:'System Receive Date',width:135, 
+		    {field:'systemRecieveDate',title:'System Receive Date',width:120, 
 		    	formatter: function(value,row,index){
 					if (value != null && value != ''){return new Date(value).toString('dd-MMM-yyyy HH:mm:ss');} 
 					else {return value;}
@@ -118,7 +117,7 @@ $(function(){
 	    	},
 		    {field:'imei',title:'Imei',width:115},
 		    {field:'recipient',title:'Sim',width:90},  
-		    {field:'text',title:'Text',width:200}, 
+		    {field:'text',title:'Text',width:400}, 
 		]]  , 
 		rownumbers:true,
 		toolbar: '#tbFilterList',
@@ -145,6 +144,7 @@ function downloadtheData() {
 function loadthedata(downloadRequest){
 	/* var dgChoosenData = new Object();
 	dgChoosenData['rows']=[]; */
+	queryParams['<%=CommunicationQueryParams.REFERENCE_NUMBER%>'] = $('#sbReferenceNumber').searchbox('getValue');
 	queryParams['<%=InboundQueryParams.RECEIVEDATE_FROM%>'] = $('#dtbReceiveFrom').datebox('getValue');
 	queryParams['<%=InboundQueryParams.RECEIVEDATE_TO%>'] = $('#dtbReceiveTo').datebox('getValue');
 	queryParams['<%=CommunicationQueryParams.IMEI%>'] = document.getElementById("txtImei").value;
@@ -162,6 +162,11 @@ function loadthedata(downloadRequest){
 					exportCSV(dat, new Array("inboundId","recipient","systemProcessingStartDate","systemProcessingEndDate","status","type","imei","referenceNumber","project", "projectId"));
 				} else {
 					$('#' + datagridName).datagrid('loadData', response);
+					alert(JSON.stringify(response));
+					alert(response.rows.length);
+					if(response.rows.length == 0) {
+						$('#' + datagridName).datagrid('getPanel').content='NO DATA';
+					}
 				}
 			})
 		//feel free to use chained handlers, or even make custom events out of them!

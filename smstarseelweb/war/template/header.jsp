@@ -19,7 +19,7 @@
 <span class="headerLogotext1">Sms</span><span class="headerLogotext2">Tarseel</span>
 </div>
 <div class="loggedInUser">
-<a href="${pageContext.request.contextPath}/admin/logout.do">logout</a> | 
+<a href="${pageContext.request.contextPath}/admin/logout.do" style="margin-right:10px">logout</a> | 
 <a onclick="$('#winpwd').window('open');">change password</a><br>
 <%=UserSessionUtils.getActiveUser(request).getUser().getFullName()%></div>
 

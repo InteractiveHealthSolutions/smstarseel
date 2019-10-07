@@ -65,6 +65,7 @@ function submitRequest() {
 					
 					showMsg(response['message']);
 					document.getElementById("btnSubmit").style.disabled=false;
+					if(response['message'].startsWith('SUCCESS')) window.location.reload();
 				})
 			//feel free to use chained handlers, or even make custom events out of them!
 			/* .success(function() { alert("second success"); }) */

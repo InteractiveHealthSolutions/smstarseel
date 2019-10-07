@@ -17,4 +17,12 @@ public class ResponseUtil {
 		
 		return list2;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> T prepareDataResponse(T object, String[] fieldsToIgnore) throws InstantiationException, IllegalAccessException{
+		T targeto = (T) object.getClass().newInstance();
+		BeanUtils.copyProperties(object, targeto, fieldsToIgnore);
+		
+		return targeto;
+	}
 }

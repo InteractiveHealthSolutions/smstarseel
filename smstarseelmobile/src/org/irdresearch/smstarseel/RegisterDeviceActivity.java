@@ -44,7 +44,6 @@ public class RegisterDeviceActivity extends SmsTarseelForm
 	boolean justloggedin;
 	private TextView screenname;
 	private TextView welcome;
-	private TextView doitline;
 	private TextView projectname;
 	private TextView projectnote;
 	
@@ -65,7 +64,6 @@ public class RegisterDeviceActivity extends SmsTarseelForm
 		
 		screenname = (TextView)  findViewById(R.id.registernote);
 		welcome = (TextView)  findViewById(R.id.welcome);
-		doitline = (TextView)  findViewById(R.id.doitnote);
 		name = (TextView)  findViewById(R.id.welcomeuser);
 		projectnote = (TextView) findViewById(R.id.projectis);
 		
@@ -80,21 +78,20 @@ public class RegisterDeviceActivity extends SmsTarseelForm
 		
 		justloggedin= bun.getBoolean("justloggedin");
 		
+		screenname.setText("Register Device");
+
 		if(justloggedin)
 		{
-			
 			welcome.setVisibility(TextView.VISIBLE);
 			projectnote.setVisibility(TextView.INVISIBLE);
 			String username = TarseelGlobals.LOGGEDIN_USERNAME(this);
 			name.setText(username);
-			screenname.setText("Register Device");
-			doitline.setText("Please register your device and select project");				
+			//doitline.setText("Please select project");				
 		}
 		else if(!justloggedin)
 		{
 			welcome.setVisibility(TextView.INVISIBLE);			
-			screenname.setText("Switch Project");
-			doitline.setText("Please select another project");
+			//doitline.setText("Please select another project");
 			projectnote.setVisibility(TextView.VISIBLE);
 			String proname = TarseelGlobals.PROJECTS(this);
 			

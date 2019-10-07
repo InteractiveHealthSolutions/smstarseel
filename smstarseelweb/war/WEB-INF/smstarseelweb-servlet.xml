@@ -13,6 +13,7 @@
     <mvc:annotation-driven/>
     
     <context:component-scan base-package="org.irdresearch.smstarseel.web.controller" />
+    <context:component-scan base-package="org.irdresearch.smstarseel.rest" />
     
 <!--     <bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
  -->    

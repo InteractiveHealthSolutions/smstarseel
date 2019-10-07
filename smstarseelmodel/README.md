@@ -14,23 +14,9 @@ Database init scripts are in project`s dist folder. Create a database with name 
 # Add smstarseel and dependencies into classpath
 Export smstarseel jar from this project (make sure to exclude .settings, dist, lib) OR get smstarseel.jar from dist folder and add this jar in your project`s classpath/lib 
 
-Apart from smstarseel jar you need to include following libraries into your project`s classpath that smstarseel is dependant on. These jar files could be found in dist/required folder or could be downloaded from internet
+Apart from smstarseel jar you need to include libraries into your project`s classpath which smstarseel is dependant on. These jar files could be found in dist/lib-hib3 or dist/lib-hib4 folder. 
 
-- antlr-2.7.7.jar
-- c3p0-0.9.1.jar
-- commons-collections-3.2.1.jar
-- dom4j-1.6.1.jar
-- hibernate-c3p0-3.6.0.Final.jar
-- hibernate-commons-annotations-3.2.0.Final.jar
-- hibernate-core-3.6.5.Final-mod.jar
-- hibernate-jpa-2.0-api-1.0.1.Final.jar
-- javassist-3.17.1-GA.jar
-- joda-time-2.0.jar
-- jta-1.1.jar
-- log4j-1.2.16.jar
-- mysql-connector-java-5.1.20.jar
-- slf4j-api-1.6.4.jar
-- slf4j-log4j12-1.6.1.jar
+The folder to be used depends on the version of hibernate you are using in your project.
 
 #### Note: 
 If you donot want to use c3p0 connection pool, comment the C3P0 connection properties in cfg.xml and remove jar files c3p0-0.9.1.jar and hibernate-c3p0-3.6.0.Final.jar from classpath/lib. Although it is strongly recommended to use aa connection pool for database.

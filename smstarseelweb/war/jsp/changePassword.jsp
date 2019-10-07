@@ -12,6 +12,11 @@ function change() {
 		return;
 	}
 	
+	if(opwd == npwd){
+		showMsg('Specified new password is same as old password');
+		return;
+	}
+	
 	if(!/^[0-9A-Za-z]{6,20}/.test(npwd)){
 		showMsg('New password must be an alphanumeric sequence of 6-20 characters');
 		return;

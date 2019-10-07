@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.Telephony;
 import android.provider.CallLog.Calls;
 
 public class CallLogReader extends TarseelService
@@ -48,6 +49,12 @@ public class CallLogReader extends TarseelService
 
 	protected void runTask() throws Exception
 	{
+		final String myPackageName = getPackageName();
+        if (!Telephony.Sms.getDefaultSmsPackage(this).equals(myPackageName)) {
+            // App is not default.
+        	TarseelGlobals.addTo_CONSOLE_BUFFER(LOG_TAG, "NOT default app. Cannot proceed.");
+		}
+        
 		int fetchsize = 6;
 		try{
 			fetchsize = Integer.parseInt(TarseelGlobals.getPreference(this, CALLLOG_READER_FETCHSIZE_PREF_NAME,"6"));

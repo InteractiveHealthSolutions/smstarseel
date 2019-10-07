@@ -82,19 +82,6 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/doitnote"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:paddingRight="3dp"
-            android:text=""
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#000000"
-            android:textSize="16sp"
-            android:typeface="monospace" />
 
          <TextView
                     android:id="@+id/simnumbertext"

@@ -62,7 +62,7 @@ function editSetting(settingName, settingRegex, oldValue, settingDisplayName, se
 
 				var stRegx = new RegExp(settingRegex+"$");
 				
-				alert(stRegx);
+				//alert(stRegx);
 				
 				if(stRegx.test(newValue) == false){
 					showMsg('Invalid value specified. Check if value conform to pattern allowed');
@@ -84,6 +84,7 @@ function editSetting(settingName, settingRegex, oldValue, settingDisplayName, se
 								document.getElementById("newValue").value='';
 								document.getElementById('settingDesc').innerHTML = '';
 								showMsg(response['message']);
+								if(response['message'].startsWith('SUCCESS')) window.location.reload();
 							})
 						//feel free to use chained handlers, or even make custom events out of them!
 						/* .success(function() { alert("second success"); }) */
