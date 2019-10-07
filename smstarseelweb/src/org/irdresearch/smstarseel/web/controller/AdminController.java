@@ -1,5 +1,6 @@
 package org.irdresearch.smstarseel.web.controller;
 
+import java.beans.PropertyEditorSupport;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -7,8 +8,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
-import javax.management.InstanceAlreadyExistsException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -21,11 +22,14 @@ import org.irdresearch.smstarseel.data.Device;
 import org.irdresearch.smstarseel.data.Device.DeviceStatus;
 import org.irdresearch.smstarseel.data.Project;
 import org.irdresearch.smstarseel.data.Role;
+import org.irdresearch.smstarseel.data.Service;
+import org.irdresearch.smstarseel.data.Service.ServiceStatus;
 import org.irdresearch.smstarseel.data.Setting;
 import org.irdresearch.smstarseel.data.User;
 import org.irdresearch.smstarseel.data.User.UserStatus;
 import org.irdresearch.smstarseel.service.UserServiceException;
 import org.irdresearch.smstarseel.web.util.ExceptionHandlerUtil;
+import org.irdresearch.smstarseel.web.util.LoggedInUser;
 import org.irdresearch.smstarseel.web.util.ResponseUtil;
 import org.irdresearch.smstarseel.web.util.UserSessionUtils;
 import org.irdresearch.smstarseel.web.util.WebGlobals.CommunicationQueryParams;
@@ -33,9 +37,15 @@ import org.irdresearch.smstarseel.web.util.WebGlobals.ProjectQueryParams;
 import org.irdresearch.smstarseel.web.util.WebGlobals.QueryParams;
 import org.irdresearch.smstarseel.web.util.WebGlobals.SettingQueryParams;
 import org.irdresearch.smstarseel.web.util.WebGlobals.UserQueryParams;
+import org.irdresearch.smstarseel.web.validator.ServiceValidator;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mysql.jdbc.StringUtils;
@@ -64,6 +74,72 @@ public class AdminController extends DataDisplayController{
 		return "redirect:/login.htm";
 	}
 	
+	@RequestMapping(value="/addNewService.htm", method=RequestMethod.GET)
+	public String registerServiceShow(HttpServletRequest req, ModelMap modal){
+		TarseelServices tsc = TarseelContext.getServices();
+		try{
+			List<Project> ol = tsc.getDeviceService().getAllProjects(0, 200);
+			modal.put("projects", ol);
+			Service s = new Service();
+			modal.put("service", s);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			modal.put("message", "Error:"+e.getMessage());
+		}
+		finally{
+			tsc.closeSession();
+		}
+		return "newService";
+	}
+	
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.registerCustomEditor(Integer.class, new PropertyEditorSupport() {
+			public void setAsText(String value) {
+				if (StringUtils.isEmptyOrWhitespaceOnly(value)) {
+					setValue(null);
+				} else {
+					setValue(Integer.parseInt(value));
+				}
+			}
+		});
+	}
+	  
+	@RequestMapping(value="/addNewService.htm", method=RequestMethod.POST)
+	public String registerServiceSubmit(@ModelAttribute("service") Service s, BindingResult bindingResult, HttpServletRequest req, ModelMap modal){
+		TarseelServices tsc = TarseelContext.getServices();
+		try{
+			ServiceValidator sv = new ServiceValidator();
+			sv.validate(s, bindingResult);
+			if(bindingResult.hasErrors()){
+				List<Project> ol = tsc.getDeviceService().getAllProjects(0, 200);
+				modal.put("projects", ol);
+				
+				return "newService";
+			}
+			
+			LoggedInUser u = UserSessionUtils.getActiveUser(req);
+			s.setAddedByUserId(u.getUser().getName());
+			s.setAddedByUsername(u.getUser().getFullName());
+			s.setAuthenticationKey(UUID.randomUUID().toString());
+			s.setDateAdded(new Date());
+			s.setStatus(ServiceStatus.ACTIVE);
+			
+			tsc.getCustomQueryService().save(s);
+			tsc.commitTransaction();
+			return "redirect:viewServices.htm?message=Added+with+AUTH_ID+"+s.getAuthenticationKey();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			modal.put("message", "Error:"+e.getMessage());
+		}
+		finally{
+			tsc.closeSession();
+		}
+		return "newService";
+	}
+	
 	@RequestMapping(value="/addNewUser.htm")
 	public String addNewUser(Map modal){
 		TarseelServices tsc = TarseelContext.getServices();
@@ -79,6 +155,11 @@ public class AdminController extends DataDisplayController{
 			tsc.closeSession();
 		}
 		return "newUser";
+	}
+	
+	@RequestMapping(value="/viewServices.htm")
+	public String viewServices(HttpServletRequest request){
+		return "viewServices";
 	}
 	
 	@RequestMapping(value="/viewUsers.htm")
@@ -328,6 +409,44 @@ public class AdminController extends DataDisplayController{
 		
 		return "redirect:/admin/admin.htm";
 	}
+	
+	@RequestMapping(value="/discard_service.dm")
+	public String discardService(HttpServletRequest request){
+		TarseelServices tsc = TarseelContext.getServices();
+		try {
+			User userlgd = UserSessionUtils.getActiveUser(request).getUser();
+			if(userlgd == null){
+				return "redirect:/login.htm";
+			}
+			else if(!userlgd.hasAdministrativePrivileges()){
+				return ExceptionHandlerUtil.showException(request, new Exception("User not permitted for requested operation"));
+			}
+			
+			Service s = (Service) tsc.getCustomQueryService().getDataByHQL("FROM Service WHERE serviceId="+Integer.parseInt(request.getParameter("SERVICE_ID"))).get(0);
+			s.setStatus(ServiceStatus.DISCARDED);
+			s.setEditedByUserId(userlgd.getName());
+			s.setEditedByUsername(userlgd.getFullName());
+			s.setDateEdited(new Date());
+			
+			tsc.getCustomQueryService().update(s);
+			tsc.commitTransaction();
+
+			EmailEngine.getInstance().emailErrorReportToAdminAsASeparateThread(s.getProject().getName()+": Service discarded", 
+					s.getProject().getName()+": Service discarded on project. Details are:\n"
+							+ "\n Auth Key: "+s.getAuthenticationKey()
+							+ "\n Name / ID: "+s.getServiceName()
+							+ "\n Date Added: "+s.getDateAdded());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally{
+			tsc.closeSession();
+		}
+		
+		return "redirect:/admin/admin.htm";
+	}
+	
 	@RequestMapping(value="/add_user.dm")
 	public @ResponseBody Map<String, Object> addUser(HttpServletRequest request){
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -478,6 +597,39 @@ public class AdminController extends DataDisplayController{
 		}
 		catch (Exception e1) {
 			e1.printStackTrace();
+		}
+	    
+		return map;
+	}
+	
+	@RequestMapping(value="/traverse_services.do")
+	public @ResponseBody Map<String, Object> traverseServices(HttpServletRequest request){
+		Map queryParams = request.getParameterMap();
+		
+		Map<String,Object> map = new HashMap<String,Object>();
+		List<Service> items = new ArrayList<>();
+		
+		TarseelServices tsc = TarseelContext.getServices();
+		try {
+			Integer pageSize = Integer.parseInt(SmsTarseelUtil.getSingleParamFromRequestMap(QueryParams.PAGE_SIZE, queryParams, false));
+			Integer pageNumber = Integer.parseInt(SmsTarseelUtil.getSingleParamFromRequestMap(QueryParams.PAGE_NUMBER, queryParams, false));
+
+			items = tsc.getCustomQueryService().getDataByHQL("FROM Service ORDER BY dateAdded DESC, status");
+			ArrayList<Service> cpu = ResponseUtil.prepareDataResponse((ArrayList<Service>) items, null);
+			tsc.closeSession(); // so that users are detached and not auto committed incase of autoflush
+			// donot move this line if needed removed code below too i.e. setting permission and user to null
+
+			map.put("rows", cpu);
+		    map.put("total", cpu.size());
+		}
+		catch (InstantiationException e1) {
+			e1.printStackTrace();
+		}
+		catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		}
+		finally{
+			tsc.closeSession();
 		}
 	    
 		return map;

@@ -1,8 +1,12 @@
 package org.irdresearch.smstarseel.data;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -11,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -23,7 +28,9 @@ public class OutboundMessage {
 
 	public enum OutboundStatus
 	{
-		PENDING, SENT, FAILED, MISSED, UNKNOWN
+		PENDING, SENT, FAILED, MISSED, 
+		UNKNOWN, // smstarseel picked for sending and now status is waiting to be updated
+		WAITING //waiting for external service to update status
 	}
 
 	public enum OutboundType
@@ -75,7 +82,7 @@ public class OutboundMessage {
 	
 	@Column(name = "tries")
 	private Integer tries;
-
+	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
 	@IndexColumn(name="ObStatusIndex")
@@ -105,10 +112,10 @@ public class OutboundMessage {
 	@Column(name = "description")
 	private String			description;
 
-	@Column(name = "errorMessage")
+	@Column(name = "errorMessage", length = 1000)
 	private String			errorMessage;
 
-	@Column(name = "failureCause")
+	@Column(name = "failureCause", length = 1000)
 	private String			failureCause;
 
 	private Integer projectId;
@@ -120,6 +127,12 @@ public class OutboundMessage {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "createdDate", nullable = false)
 	private Date			createdDate;
+
+	@ElementCollection(fetch=FetchType.EAGER)
+    @MapKeyColumn(name="attributeKey")
+    @Column(name="attributeValue", length = 1000)
+    @CollectionTable(name="outbound_extras", joinColumns=@JoinColumn(name="outbound_extras_id"))
+    Map<String, String> extras = new HashMap<String, String>(); // maps from attribute name to value
 
 	/**
 	 * @param recipient
@@ -393,5 +406,29 @@ public class OutboundMessage {
 	public void setReferenceNumber(String referenceNumber)
 	{
 		this.referenceNumber = referenceNumber;
+	}
+
+	public Date getSentDate() {
+		return sentDate;
+	}
+
+	public void setSentDate(Date sentDate) {
+		this.sentDate = sentDate;
+	}
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+
+	public Map<String, String> getExtras() {
+		return extras;
+	}
+
+	public void setExtras(Map<String, String> extras) {
+		this.extras = extras;
 	}
 }

@@ -7,6 +7,8 @@ import org.irdresearch.smstarseel.data.dao.DAOCallLog;
 import org.irdresearch.smstarseel.data.dao.DAOCallLogImpl;
 import org.irdresearch.smstarseel.data.dao.DAODevice;
 import org.irdresearch.smstarseel.data.dao.DAODeviceImpl;
+import org.irdresearch.smstarseel.data.dao.DAODirectQuery;
+import org.irdresearch.smstarseel.data.dao.DAODirectQueryImpl;
 import org.irdresearch.smstarseel.data.dao.DAOInboundMessage;
 import org.irdresearch.smstarseel.data.dao.DAOInboundMessageImpl;
 import org.irdresearch.smstarseel.data.dao.DAOOutBoundMessage;
@@ -19,6 +21,8 @@ import org.irdresearch.smstarseel.data.dao.DAOSettingImpl;
 import org.irdresearch.smstarseel.data.dao.DAOUserImpl;
 import org.irdresearch.smstarseel.service.CallLogService;
 import org.irdresearch.smstarseel.service.CallLogServiceImpl;
+import org.irdresearch.smstarseel.service.CustomQueryService;
+import org.irdresearch.smstarseel.service.CustomQueryServiceImpl;
 import org.irdresearch.smstarseel.service.DeviceService;
 import org.irdresearch.smstarseel.service.DeviceServiceImpl;
 import org.irdresearch.smstarseel.service.SMSService;
@@ -37,6 +41,7 @@ public class TarseelServices {
 	private SettingService setts;
 	private SMSService smss;
 	private CallLogService calllogs;
+	private CustomQueryService customQueryService;
 	
 	TarseelServices(SessionFactory sessionFactoryObj) 
 	{
@@ -61,6 +66,9 @@ public class TarseelServices {
 		
 		DAOCallLog calldao = new DAOCallLogImpl(session);
 		this.calllogs = new CallLogServiceImpl(calldao);
+		
+		DAODirectQuery dqs = new DAODirectQueryImpl(session);
+		this.customQueryService = new CustomQueryServiceImpl(dqs);
 	}
 
 	public void beginTransaction(){
@@ -114,4 +122,9 @@ public class TarseelServices {
 	{
 		return calllogs;
 	}
+
+	public CustomQueryService getCustomQueryService() {
+		return customQueryService;
+	}
+
 }

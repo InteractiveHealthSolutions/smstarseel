@@ -1,4 +1,3 @@
-/org/
 /FileUploadTest.class
 /HttpResponse.class
 /HttpSender.class
@@ -10,3 +9,4 @@
 /dataAdder.class
 /fileUploadDownload.class
 /jsontest.class
+/org/

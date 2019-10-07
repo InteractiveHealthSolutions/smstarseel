@@ -50,9 +50,11 @@ id="WebApp_ID" version="2.5">
       <!-- <url-pattern>*.htm</url-pattern>
       <url-pattern>*.do</url-pattern>
       <url-pattern>*.dm</url-pattern>
-      <url-pattern>*.tst</url-pattern>
-      <url-pattern>/rest/*</url-pattern> -->
-      <url-pattern>/</url-pattern>
+      <url-pattern>*.tst</url-pattern>-->
+      <url-pattern>*.htm</url-pattern>
+      <url-pattern>*.do</url-pattern>
+      <url-pattern>*.dm</url-pattern>
+      <url-pattern>/rest/*</url-pattern> 
   </servlet-mapping>
 
   <servlet>
